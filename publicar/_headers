@@ -1,0 +1,10 @@
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Robots-Tag: noindex, nofollow
+
+/apresentacoes/*
+  Cache-Control: private, max-age=300, must-revalidate
+
+/entrar/*
+  Cache-Control: public, max-age=300, must-revalidate

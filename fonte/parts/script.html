@@ -1,0 +1,312 @@
+<script>
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+/* Notas do apresentador por slide (id) e passo */
+const NOTES_BY_ID = {
+  's-capa': ['Abertura. Deixar a capa no telão enquanto o público se acomoda.'],
+  's-vid1': ['Vídeo de abertura (Trajetória). Toca sozinho ao entrar no slide. Pausar/retomar: botão Vídeo aqui, tecla V ou clique no painel. Avançar com o passador encerra o vídeo.'],
+  's-livro': ['O livro: “Tudo o que você vai ouvir hoje está aqui.”'],
+  's-3p': ['3 perguntas que definem o presente e o futuro do seu negócio.'],
+  's-q1': ['Fazer a pergunta e esperar. Deixar a plateia responder em voz alta antes de avançar.'],
+  's-q2': ['Pergunta 2: o que separa crescimento de colapso?'],
+  's-q3': ['Pergunta 3: o que faz o negócio existir além de você?'],
+  's-p1': ['A resposta das três perguntas é a mesma.'],
+  's-p2': ['Pessoas certas.'],
+  's-p3': ['Ter o time certo.'],
+  's-bio': ['Quem fala com você: 46 anos, Rapha, Paulinho, Getulinho e Raphael, 29 anos de empresário.'],
+  's-lab': ['O laboratório da Timelogia: 14 estados, +130 lojas, +1.500 colaboradores, +20 eventos, +R$ 500 mi.'],
+  's-emp': ['Empresas do grupo.'],
+  's-quem': ['Mas quem eu sou realmente?'],
+  's-chev': ['Contar a história do domingo do Chevette e da promessa à Ronilda. Minha mãe partiu em 12 de agosto de 1995 e não viu nada do que veio depois.'],
+  's-hist': ['Histórias ruins são boas de contar.'],
+  's-time': ['O time que você quer é o time que você constrói.'],
+  's-160': ['“Getúlio, você sabe o que está acontecendo aqui na empresa?” Eu não deleguei, eu delarguei.'],
+  's-vir': ['A virada: 0 demissões no time, +R$ 13 mi, recordes de venda.'],
+  's-mesmas': ['Mesmas pessoas, mesmo mercado, mesmo produto. O que mudou foi a forma de liderar.'],
+  's-dois': ['Os dois líderes da época, que governavam por hierarquia e medo. E a responsabilidade era minha, que me ausentei.'],
+  's-quem2': ['Perguntar à plateia: onde você está hoje? Revelar um tipo por vez.', '<b>ADIADOR</b>', '<b>MUDADOR</b>', '<b>FAZEDOR</b>', '<b>SUPERADOR</b>'],
+  's-energia': ['Gente não segue cargo, segue energia.'],
+  's-pod': ['Os 6 poderes: dinheiro, hierarquia, influência, conhecimento, carisma, medo.'],
+  's-2pod': ['Os meus dois naturais: conhecimento e carisma.'],
+  's-ext': ['Extintores: hierarquia e medo ficam atrás do vidro.'],
+  's-7': ['O sétimo poder: Propósito.'],
+  's-dom': ['Domine os seis, mas se ajoelhe diante do sétimo.'],
+  's-pil': ['Uma mão, cinco dedos. O dinheiro é o dedo mindinho: o menos essencial dos cinco, mas ninguém quer viver sem ele.',
+            'Pilar 1 · <b>Ambiente de trabalho</b>', 'Pilar 2 · <b>Possibilidade de crescimento</b>', 'Pilar 3 · <b>Orgulho para quem trabalha</b>', 'Pilar 4 · <b>Pertencimento</b>', 'Pilar 5 · <b>Dinheiro, o dedo mindinho</b>'],
+  's-posi': ['Posicione-se: coragem, responsabilidades, ações.'],
+  's-ocupa': ['Quando você não ocupa o seu lugar de líder, alguém sem os seus valores ocupa.'],
+  's-pont': ['O líder sustenta todas as pontas: sócios, clientes, colaboradores, empresa.'],
+  's-ciclo': ['O ciclo virtuoso.'],
+  's-disc': ['Obesidade cerebral: aprendizado, networking e conhecimento acumulados sem aplicar e sem ensinar.'],
+  's-mesas': ['A minha Mesa do Ser tem endereço: o sítio do meu sogro, em Caetanópolis. Lá eu só sou o Getúlio.'],
+  's-agua': ['Quem não recebe não tem de onde dar.'],
+  's-cur': ['Liderança Curativa: as pessoas saem melhores do que entraram.'],
+  's-conte': ['Conte histórias. Mostre por que fazer.'],
+  's-func': ['Será que isso funciona mesmo?'],
+  's-prova1': ['Prova 1: ela foi demitida.'],
+  's-prova2': ['Prova 2: ela também saiu da empresa.'],
+  's-cult': ['Quando até quem sai defende a cultura, ela não era discurso.'],
+  's-sem': ['O semeador · Mateus 13.'],
+  's-vid2': ['Vídeo dos Líderes (Homenagem). Toca sozinho ao entrar no slide. Pausar/retomar: botão Vídeo aqui, tecla V ou clique no painel. Avançar com o passador encerra o vídeo.'],
+  's-prom': ['Silêncio de alguns segundos. Quem está esperando, talvez sem saber, que você se torne o líder que faz o time inteiro respirar?'],
+  's-fim': ['Encerramento. Muito obrigado! QR code do Instagram na tela.']
+};
+
+/* Palavras entram uma a uma (data-delay = início em s, data-step-ms = intervalo) */
+$$('[data-words]').forEach(h => { let i = 0; const d0 = +(h.dataset.delay || .5), stp = +(h.dataset.stepMs || 110) / 1000;
+  const wrap = n => [...n.childNodes].forEach(c => {
+    if (c.nodeType === 3) { const f = document.createDocumentFragment(); c.textContent.split(/(\s+)/).forEach(t => { if (!t) return; if (/^\s+$/.test(t)) return f.append(t);
+      const s = document.createElement('span'); s.className = 'w'; s.textContent = t; s.style.transitionDelay = (d0 + i++ * stp).toFixed(2) + 's'; f.append(s); }); c.replaceWith(f); }
+    else if (c.nodeType === 1) wrap(c); }); wrap(h); });
+
+/* Contadores: sobem uma única vez até o valor exato do slide */
+const counters = $$('[data-count]').map(el => ({ el, final: el.textContent }));
+function runCounters(slide) {
+  if (window.__ROLE === 'mirror' || matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  counters.filter(c => slide.contains(c.el)).forEach(c => {
+    const m = c.final.match(/\d[\d.]*/); if (!m) return; const target = +m[0].replace(/\./g, ''); const t0 = performance.now() + 650, dur = 1500;
+    const fmt = v => c.final.replace(m[0], Math.round(v).toLocaleString('pt-BR'));
+    c.el.textContent = fmt(0); cancelAnimationFrame(c.raf);
+    const tick = now => { const p = Math.min(1, Math.max(0, (now - t0) / dur)); const e = 1 - Math.pow(1 - p, 4);
+      c.el.textContent = p < 1 ? fmt(target * e) : c.final; if (p < 1) c.raf = requestAnimationFrame(tick); };
+    c.raf = requestAnimationFrame(tick);
+  });
+}
+function resetCounters() { counters.forEach(c => { cancelAnimationFrame(c.raf); c.el.textContent = c.final; }); }
+
+/* ---------- Vídeos do YouTube ----------
+   Só a janela do painel toca (espelhos do apresentador não carregam o vídeo, para não duplicar som).
+   O player é criado ao entrar no slide (autoplay com som) e destruído ao sair (para o som na hora).
+   O iframe não recebe foco: o passador continua comandando a apresentação. */
+const Video = (() => {
+  let ifr = null, slide = null, playing = false, timer = null;
+  const cmd = (func, args = []) => { try { ifr && ifr.contentWindow.postMessage(JSON.stringify({ event: 'command', func, args }), '*'); } catch (e) {} };
+  function stop() { clearTimeout(timer); if (ifr) { ifr.remove(); ifr = null; } if (slide) slide.classList.remove('playing', 'ended'); slide = null; playing = false; document.body.classList.remove('vidon'); }
+  function enter(s) {
+    stop(); const id = s.dataset.video; if (!id || window.__ROLE !== 'audience') return;
+    if (location.protocol === 'file:') return; /* YouTube recusa tocar em arquivo local (erro 153): só pelo link online */
+    slide = s;
+    timer = setTimeout(() => {
+      const origin = /^https?:/.test(location.protocol) ? '&origin=' + encodeURIComponent(location.origin) : '';
+      ifr = document.createElement('iframe');
+      ifr.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&playsinline=1&modestbranding=1&controls=0&iv_load_policy=3&disablekb=1&fs=0&enablejsapi=1${origin}`;
+      ifr.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      ifr.referrerPolicy = 'strict-origin-when-cross-origin';
+      ifr.setAttribute('tabindex', '-1'); ifr.title = 'Vídeo';
+      ifr.addEventListener('load', () => { try { ifr.contentWindow.postMessage(JSON.stringify({ event: 'listening', id: 'yt' }), '*'); } catch (e) {} });
+      $('.yt', s).appendChild(ifr); s.classList.add('playing'); document.body.classList.add('vidon'); playing = true;
+    }, 900);
+  }
+  /* estado vindo do player: 0 = terminou -> some e volta ao card do slide (sem vídeos sugeridos) */
+  window.addEventListener('message', e => {
+    if (!ifr || e.source !== ifr.contentWindow || typeof e.data !== 'string') return;
+    let d; try { d = JSON.parse(e.data); } catch (x) { return; }
+    const st = d && d.info && d.info.playerState;
+    if (d.event === 'onError') { slide && slide.classList.add('ended'); document.body.classList.remove('vidon'); playing = false; return; }
+    if (st === 0) { slide && slide.classList.add('ended'); document.body.classList.remove('vidon'); playing = false; }
+    else if (st === 1) { slide && slide.classList.remove('ended'); document.body.classList.add('vidon'); playing = true; }
+    else if (st === 2) playing = false;
+  });
+  function toggle() { if (!slide) return; if (!ifr) { enter(slide); return; } slide.classList.remove('ended'); playing ? cmd('pauseVideo') : cmd('playVideo'); playing = !playing; }
+  /* o iframe pode roubar o foco ao carregar: devolve o teclado à apresentação */
+  window.addEventListener('blur', () => setTimeout(() => { if (document.activeElement && document.activeElement.tagName === 'IFRAME') { document.activeElement.blur(); window.focus(); } }, 0));
+  return { enter, stop, toggle };
+})();
+
+/* ---------- Navegação ---------- */
+const slides = $$('#deck .slide');
+let cur = 0, step = 0;
+const stepsOf = i => +slides[i].dataset.steps || 0;
+const NOTES = {}; slides.forEach((s, i) => (NOTES_BY_ID[s.id] || []).forEach((n, st) => NOTES[i + '.' + st] = n));
+$('#hud').innerHTML = slides.map(() => '<i></i>').join('');
+$$('#hud i').forEach((d, k) => d.addEventListener('click', e => { e.stopPropagation(); go(k, 0); }));
+const foot = $('#foot'), footNum = $('#foot .num');
+function applyStep(s, st) {
+  s.dataset.step = st;
+  $$('[data-show]', s).forEach(e => e.classList.toggle('vis', st >= +e.dataset.show));
+  $$('[data-only]', s).forEach(e => e.classList.toggle('vis', st === +e.dataset.only));
+  $$('[data-only-img]', s).forEach(e => e.classList.toggle('vis', st === +e.dataset.onlyImg));
+  $$('[data-active]', s).forEach(e => e.classList.toggle('act', st === +e.dataset.active));
+}
+function go(i, st, dir = 1) {
+  i = Math.max(0, Math.min(slides.length - 1, i)); st = Math.max(0, Math.min(stepsOf(i), st));
+  const changed = i !== cur || !slides[i].classList.contains('on');
+  slides.forEach((s, k) => { s.classList.toggle('on', k === i); s.classList.toggle('past', k < i); });
+  cur = i; step = st; const s = slides[i];
+  applyStep(s, st);
+  if (changed) Video.enter(s);
+  if (changed) { resetCounters(); runCounters(s); }
+  /* rodapé */
+  const nums = s.dataset.nums ? s.dataset.nums.split(',') : null;
+  footNum.textContent = nums ? nums[Math.min(st, nums.length - 1)] : (s.dataset.num || '');
+  foot.classList.toggle('hide', s.hasAttribute('data-nofoot'));
+  foot.classList.toggle('dk', s.dataset.foot === 'dk');
+  $$('#hud i').forEach((d, k) => d.classList.toggle('on', k === i));
+  if (window.__ROLE === 'audience') { if (typeof Sync !== 'undefined' && Sync) Sync.state(); }
+  try { history.replaceState(null, '', location.search + '#' + (i + 1) + (st ? '.' + st : '')); } catch (e) {}
+}
+function next() { if (step < stepsOf(cur)) go(cur, step + 1, 1); else if (cur < slides.length - 1) go(cur + 1, 0, 1); }
+function prev() { if (step > 0) go(cur, step - 1, -1); else if (cur > 0) go(cur - 1, stepsOf(cur - 1), -1); }
+function begin() { hideHint(); }
+function toggleFs() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(() => {}); }
+const hint = $('#hint'); function hideHint() { hint.classList.add('gone'); }
+if (location.protocol === 'file:' && window.__ROLE === 'audience') hint.innerHTML += '<br><span style="color:#D4AF37">Arquivo local: os vídeos do YouTube só tocam pelo link online.</span>';
+setTimeout(hideHint, 8000);
+
+let numBuf = '', numT;
+document.addEventListener('keydown', e => {
+  if (window.__ROLE !== 'audience') return;
+  const k = e.key; hideHint();
+  /* P abre o apresentador ANTES de qualquer tela cheia: o Chrome só permite uma ação privilegiada por tecla/clique */
+  if ((k === 'p' || k === 'P') && !e.repeat) { e.preventDefault(); Sync.openPresenter(); return; }
+  if (['ArrowRight', 'PageDown', ' ', 'Enter', 'ArrowDown'].includes(k)) { e.preventDefault(); next(); }
+  else if (['ArrowLeft', 'PageUp', 'Backspace', 'ArrowUp'].includes(k)) { e.preventDefault(); prev(); }
+  else if (k === 'Home') go(0, 0); else if (k === 'End') go(slides.length - 1, 0);
+  else if (k === 'f' || k === 'F') toggleFs();
+  else if (k === 'v' || k === 'V' || k === 'k' || k === 'K') Video.toggle();
+  else if (/^[0-9]$/.test(k)) { /* digitar o número do slide (ex.: 1 e 2 = slide 12) */
+    numBuf += k; clearTimeout(numT); numT = setTimeout(() => { const n = +numBuf; numBuf = ''; if (n >= 1) go(n - 1, 0); }, 700); }
+});
+$('#deck').addEventListener('click', e => { if (window.__ROLE !== 'audience' || e.target.closest('a,button,[data-noclick]')) return; hideHint();
+  if (slides[cur].dataset.video) { Video.toggle(); return; } next(); });
+$('#deck').addEventListener('contextmenu', e => { e.preventDefault(); prev(); });
+let tx = null;
+document.addEventListener('touchstart', e => tx = e.touches[0].clientX, { passive: true });
+document.addEventListener('touchend', e => { if (tx == null) return; const dx = e.changedTouches[0].clientX - tx; if (Math.abs(dx) > 50) dx < 0 ? next() : prev(); tx = null; });
+$('#fsBtn').addEventListener('click', e => { e.stopPropagation(); toggleFs(); });
+
+/* Cursor some quando parado (sem nenhum efeito que siga o mouse) */
+let idleT;
+document.body.classList.add('idle');
+document.addEventListener('pointermove', () => { document.body.classList.remove('idle'); clearTimeout(idleT); idleT = setTimeout(() => document.body.classList.add('idle'), 2200); });
+
+/* ============================================================
+   MODO APRESENTADOR: sincronização por 3 canais com deduplicação
+   ============================================================ */
+var Sync = (() => {
+  const KEY = 'getulio-encantar-sync{{SYNC_SUFFIX}}';
+  let pw = null; const seen = new Set();
+  let bc = null; try { bc = new BroadcastChannel(KEY); } catch (e) {}
+  function post(msg) {
+    msg.id = Math.random().toString(36).slice(2) + Date.now(); msg.from = window.__ROLE; seen.add(msg.id);
+    const w = window.__ROLE === 'audience' ? pw : window.opener;
+    if (w && !w.closed) try { w.postMessage(msg, '*'); } catch (e) {}
+    if (bc) try { bc.postMessage(msg); } catch (e) {}
+    try { localStorage.setItem(KEY, JSON.stringify(msg)); } catch (e) {}
+  }
+  const listeners = []; const on = fn => listeners.push(fn);
+  function receive(d, source) {
+    if (!d || typeof d !== 'object') return;
+    if (d.type === 'goto') { if (window.__ROLE === 'mirror') go(d.i, d.st, 0); return; }
+    if (!d.id || seen.has(d.id) || d.from === window.__ROLE) return;
+    seen.add(d.id); if (seen.size > 500) seen.clear();
+    if (window.__ROLE === 'audience') {
+      if (d.type === 'hello') { if (source && source.postMessage) pw = source; state(); }
+      else if (d.type === 'cmd') { begin(); if (d.action === 'next') next(); else if (d.action === 'prev') prev(); else if (d.action === 'goto') go(d.i, d.st || 0, 1); else if (d.action === 'video') Video.toggle(); }
+    }
+    listeners.forEach(fn => fn(d));
+  }
+  window.addEventListener('message', e => receive(e.data, e.source));
+  if (bc) bc.onmessage = e => receive(e.data, null);
+  window.addEventListener('storage', e => { if (e.key === KEY && e.newValue) try { receive(JSON.parse(e.newValue), null); } catch (x) {} });
+  function state() { if (window.__ROLE === 'audience') post({ type: 'state', i: cur, st: step, steps: slides.map((s, k) => stepsOf(k)), pn: footNum.textContent, ar: innerWidth / innerHeight }); }
+  if (window.__ROLE === 'audience') setInterval(state, 2000);
+  const presenterURL = () => location.href.split('#')[0].split('?')[0] + '?presenter';
+  function toast(html) { let el = $('#pvtoast'); if (!el) { el = document.createElement('div'); el.id = 'pvtoast'; document.body.appendChild(el); }
+    el.innerHTML = html; el.className = 'show'; clearTimeout(el._t); el._t = setTimeout(() => el.className = '', 12000); }
+  function openPresenter() {
+    let w = null; try { w = window.open(presenterURL(), KEY + '-apresentador', 'popup=yes,width=1440,height=900'); } catch (e) {}
+    if (w) { pw = w; try { w.focus(); } catch (e) {} setTimeout(state, 1500); }
+    else toast(`O navegador bloqueou a janela. <a href="${presenterURL()}" target="${KEY}-apresentador">Clique aqui para abrir o apresentador</a> ou permita pop-ups na barra de endereço.`);
+  }
+  return { state, openPresenter, post, on };
+})();
+$('#presBtn').addEventListener('click', e => { e.stopPropagation(); Sync.openPresenter(); });
+
+if (window.__ROLE === 'presenter') {
+  document.title = 'Apresentador · Como Encantar Seu Time';
+  let S = null, t0 = null, lastState = 0;
+  const pv = document.createElement('div'); pv.id = 'pv';
+  pv.innerHTML = `<div class="top"><div class="brand">Modo apresentador</div><span class="pill" data-pos>—</span><span class="status off" data-status>Painel desconectado</span>
+      <div class="timer" data-timer>00:00</div><button data-reset>Zerar</button><button data-video style="display:none">▶❚❚ Vídeo</button><div class="clock" data-clock></div></div>
+    <div class="main"><div class="col"><div class="lbl">NO PAINEL AGORA</div><div class="screen live"><iframe data-cur></iframe></div><div class="dots" data-dots></div></div>
+      <div class="col"><div class="lbl">PRÓXIMO CLIQUE</div><div class="screen" data-nextwrap><iframe data-next></iframe><div class="end">Fim da apresentação</div></div>
+        <div class="lbl">NOTA</div><div class="notes" data-notes>Aguardando o painel: abra a apresentação em outra janela e pressione <b>P</b> lá.</div></div></div>
+    <div class="bar"><button class="nav" data-prev>◀ Voltar</button><button class="nav next" data-nextbtn>Avançar ▶</button></div>`;
+  document.body.appendChild(pv);
+  const base = location.href.split('#')[0].split('?')[0];
+  const fCur = pv.querySelector('[data-cur]'), fNext = pv.querySelector('[data-next]');
+  fCur.src = base + '?mirror'; fNext.src = base + '?mirror&n=1';
+  const send = (action, extra = {}) => Sync.post({ type: 'cmd', action, ...extra });
+  const nextOf = (i, st) => st < S.steps[i] ? [i, st + 1] : i < S.steps.length - 1 ? [i + 1, 0] : null;
+  function render() {
+    if (!S) return; const n = nextOf(S.i, S.st);
+    if (S.ar) pv.style.setProperty('--ar', S.ar);
+    try { fCur.contentWindow.postMessage({ type: 'goto', i: S.i, st: S.st }, '*'); } catch (e) {}
+    pv.querySelector('[data-nextwrap]').classList.toggle('isend', !n);
+    pv.querySelector('[data-video]').style.display = slides[S.i] && slides[S.i].dataset.video ? '' : 'none';
+    if (n) try { fNext.contentWindow.postMessage({ type: 'goto', i: n[0], st: n[1] }, '*'); } catch (e) {}
+    pv.querySelector('[data-pos]').textContent = `Tela ${S.i + 1} de ${S.steps.length}` + (S.pn ? ` · slide ${S.pn} do roteiro` : '') + (S.steps[S.i] ? ` · passo ${S.st + 1} de ${S.steps[S.i] + 1}` : '');
+    pv.querySelector('[data-notes]').innerHTML = (NOTES[S.i + '.' + S.st] || NOTES[S.i + '.0'] || '') + (n ? `<br><br><span class="after">Depois: ${(NOTES[n[0] + '.' + n[1]] || '').replace(/<[^>]+>/g, '')}</span>` : '<br><br><span class="after">Último slide.</span>');
+    const dots = pv.querySelector('[data-dots]');
+    if (!dots.children.length) { dots.innerHTML = S.steps.map((_, k) => `<i title="${k + 1}"></i>`).join(''); [...dots.children].forEach((d, k) => d.onclick = () => send('goto', { i: k, st: 0 })); }
+    [...dots.children].forEach((d, k) => d.classList.toggle('on', k === S.i));
+  }
+  Sync.on(d => { if (d.type !== 'state') return; const changed = !S || S.i !== d.i || S.st !== d.st || S.ar !== d.ar || S.pn !== d.pn; S = d; lastState = Date.now(); if (!t0) t0 = Date.now();
+    const st = pv.querySelector('[data-status]'); st.className = 'status ok'; st.textContent = 'Painel conectado'; if (changed) render(); });
+  [fCur, fNext].forEach(f => f.addEventListener('load', () => setTimeout(render, 300)));
+  const hello = () => { Sync.post({ type: 'hello' }); if (Date.now() - lastState > 6000) { const st = pv.querySelector('[data-status]'); st.className = 'status off'; st.textContent = 'Painel desconectado: abra a apresentação em outra janela'; } };
+  hello(); setInterval(hello, 3000);
+  setInterval(() => { pv.querySelector('[data-clock]').textContent = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    if (t0) { const s = Math.floor((Date.now() - t0) / 1000); pv.querySelector('[data-timer]').textContent = String(s / 60 | 0).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); } }, 500);
+  pv.querySelector('[data-reset]').onclick = () => t0 = Date.now();
+  pv.querySelector('[data-video]').onclick = () => send('video');
+  pv.querySelector('[data-prev]').onclick = () => send('prev');
+  pv.querySelector('[data-nextbtn]').onclick = () => send('next');
+  document.addEventListener('keydown', e => { const k = e.key;
+    if (['ArrowRight', 'PageDown', ' ', 'Enter', 'ArrowDown'].includes(k)) { e.preventDefault(); send('next'); }
+    else if (['ArrowLeft', 'PageUp', 'Backspace', 'ArrowUp'].includes(k)) { e.preventDefault(); send('prev'); } });
+}
+
+/* Estado inicial: aceita #3.1 na URL; ?nogate esconde a dica (testes) */
+(function init() {
+  const m = location.hash.match(/^#(\d+)(?:\.(\d+))?/);
+  if (m) { cur = Math.max(0, Math.min(slides.length - 1, +m[1] - 1)); step = Math.min(+(m[2] || 0), stepsOf(cur)); }
+  if (window.__ROLE !== 'audience' || new URLSearchParams(location.search).has('nogate')) hideHint();
+  const c = cur, s = step; cur = -1; requestAnimationFrame(() => go(c, s, 0));
+})();
+</script>
+<style>
+html[data-role="presenter"] #deck,html[data-role="presenter"] #hud,html[data-role="presenter"] .ctl,html[data-role="presenter"] #hint,html[data-role="presenter"] #foot{display:none!important}
+#pv{position:fixed;inset:0;z-index:100;background:#0E0E10;color:#F5F2EA;font-family:var(--sans);display:grid;grid-template-rows:auto 1fr auto;gap:14px;padding:16px 20px;font-size:16px;--ar:1.778}
+#pv .top{display:flex;align-items:center;gap:18px}
+#pv .brand{font-weight:700;font-size:18px;color:var(--gold);letter-spacing:.04em}
+#pv .pill{background:#1A1A1D;border:1px solid #2C2C31;border-radius:999px;padding:6px 14px;font-size:15px}
+#pv .timer{font-size:34px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--gold);margin-left:auto}
+#pv .clock{font-size:20px;color:#8F8A82}
+#pv button{font-family:var(--sans);font-weight:600;cursor:pointer;border:0;border-radius:10px;padding:8px 14px;background:#2C2C31;color:#F5F2EA;font-size:14px}
+#pv button:hover{background:var(--gold);color:#141416}
+#pv .status{font-size:14px;padding:6px 12px;border-radius:999px}
+#pv .status.ok{background:rgba(212,175,55,.16);color:#E4C766}
+#pv .status.off{background:rgba(255,77,94,.18);color:#FF8A95}
+#pv .main{display:grid;grid-template-columns:1.7fr 1fr;gap:18px;min-height:0}
+#pv .col{display:flex;flex-direction:column;gap:12px;min-height:0}
+#pv .lbl{font-size:12px;font-weight:700;letter-spacing:.2em;color:var(--gold)}
+#pv .screen{position:relative;width:100%;aspect-ratio:var(--ar);max-height:60vh;border-radius:12px;overflow:hidden;background:#000;box-shadow:0 0 0 2px #2C2C31}
+#pv .screen.live{box-shadow:0 0 0 3px var(--gold)}
+#pv .screen iframe{position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none}
+#pv .screen .end{position:absolute;inset:0;display:none;place-items:center;font-size:22px;color:#8F8A82}
+#pv .screen.isend .end{display:grid}
+#pv .notes{flex:1;min-height:0;overflow:auto;background:#1A1A1D;border-radius:12px;padding:16px 18px;font-size:22px;line-height:1.45}
+#pv .notes b{color:var(--gold)}
+#pv .notes .after{color:#8F8A82;font-size:17px}
+#pv .bar{display:flex;gap:12px}
+#pv .bar .nav{flex:1;font-size:22px;padding:18px}
+#pv .bar .nav.next{background:var(--gold);color:#141416}
+#pv .dots{display:flex;gap:6px;flex-wrap:wrap}
+#pv .dots i{width:22px;height:8px;border-radius:9px;background:#2C2C31;cursor:pointer}
+#pv .dots i.on{background:var(--gold)}
+</style>
+</body>
+</html>
