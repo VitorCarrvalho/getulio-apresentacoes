@@ -1,6 +1,6 @@
 # Apresentações do Getúlio Cavalcante
 
-Catálogo de palestras publicado em **lideresdosucesso.com/apresentacoes** (Cloudflare Pages, ligado a este repositório). Todo push na `main` vai direto para produção.
+Catálogo de palestras publicado em **lideresdosucesso.com/apresentacoes** (Cloudflare Worker com arquivos estáticos, ligado a este repositório; endereço técnico: getulio-apresentacoes.vitorcarrvalho.workers.dev). Todo push na `main` vai direto para produção.
 
 A palestra-base é "Como Encantar Seu Time", recriada a partir do PowerPoint (55 slides) como **um único arquivo HTML autossuficiente**: fontes, imagens, ícones e QR code embutidos em base64. Roda offline com duplo clique. Formato principal: **painel de LED wide, cerca de 3:1**; também precisa funcionar em 2,4:1, 16:9, 16:10 e 4:3. São 46 telas e 55 cliques, na mesma sequência do PowerPoint (os slides 22 a 26 e 33 a 38 viraram uma tela com revelação a cada clique).
 
@@ -16,7 +16,8 @@ edicoes/<slug>/edicao.json  configuração de cada edição (+ logo do cliente +
 catalogo/index.html         tela do catálogo (cards, busca, filtros, favoritos)
 catalogo/entrar.html        tela do token
 catalogo/_headers           cabeçalhos HTTP copiados para publicar/
-functions/_middleware.js    proteção por token (Cloudflare Pages Functions)
+src/worker.js               Worker: proteção por token e entrega dos arquivos de publicar/
+wrangler.jsonc              configuração do Worker (pasta publicar/, nome do projeto)
 ferramentas/build.py        monta tudo em publicar/
 ferramentas/textcheck.js    confere o texto de cada edição contra o PPT
 ferramentas/capas.js        gera a miniatura do card (edicoes/<slug>/capa.webp)
@@ -61,11 +62,13 @@ Ids das telas, na ordem: s-capa, s-vid1, s-livro, s-3p, s-q1, s-q2, s-q3, s-p1, 
 6. Commit e push na `main` → Cloudflare publica sozinho em 1 a 2 minutos.
 
 ## Acesso e Cloudflare
-- Projeto Cloudflare **Pages** ligado ao GitHub. Build command: **vazio**. Build output directory: **publicar**. Root directory: vazio. A pasta `functions/` na raiz é detectada sozinha.
-- Senha: variável secreta **ACCESS_TOKEN** em Settings → Variables and Secrets (Production). Sem ela, o site fica todo bloqueado.
+- Projeto Cloudflare **Worker** (Workers Builds) ligado ao GitHub. Tudo que importa está no `wrangler.jsonc`: os arquivos vêm de `publicar/` e passam antes pelo `src/worker.js`. Não precisa de build no Cloudflare: o `publicar/` já vai pronto no commit.
+- Senha: secret **ACCESS_TOKEN** em Worker → Settings → Variables and Secrets. Sem ela, o site fica todo bloqueado. `keep_vars: true` impede que o deploy apague variáveis do painel.
 - Quem acerta o token ganha um cookie assinado de 7 dias. Trocar a senha derruba todos os acessos. "Sair" no catálogo apaga o cookie.
-- `lideresdosucesso.com/` redireciona para `/apresentacoes/`. A tela do token é `/entrar/`.
+- `/` redireciona para `/apresentacoes/`. A tela do token é `/entrar/`.
+- Domínio: Worker → Settings → Domains & Routes → Custom domain `lideresdosucesso.com`.
 - Favoritos ficam no navegador de cada aparelho.
+- Teste local: `ACCESS_TOKEN=x` em `.dev.vars` e `npx wrangler dev`.
 
 ## Regras do cliente (obrigatórias)
 1. **Texto 100% fiel ao PowerPoint.** Não altere, corrija nem "melhore" nenhuma palavra, acento ou pontuação. Depois de qualquer mudança, rode `node ferramentas/textcheck.js`: cada edição tem que dar `bad 0` e nenhuma linha `EXTRA`. Texto novo só entra se eu pedir.

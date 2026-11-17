@@ -1,0 +1,15 @@
+// Configuração do Worker no Cloudflare. O deploy acontece sozinho a cada push na main.
+{
+  "name": "getulio-apresentacoes",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./publicar",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  },
+  "keep_vars": true,
+  "observability": { "enabled": true }
+}

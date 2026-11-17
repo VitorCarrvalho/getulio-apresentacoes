@@ -1,5 +1,5 @@
-// Acesso por token para todo o site (Cloudflare Pages Functions).
-// A senha fica na variável secreta ACCESS_TOKEN do projeto no Cloudflare (Settings → Variables and Secrets).
+// Worker do site (Cloudflare Workers + Static Assets): acesso por token e entrega dos arquivos de publicar/.
+// A senha fica na variável secreta ACCESS_TOKEN do projeto no Cloudflare (Worker → Settings → Variables and Secrets).
 // Quem acerta o token recebe um cookie assinado que vale 7 dias. Trocar a senha derruba todos os acessos.
 
 const COOKIE = 'lds_acesso';
@@ -33,7 +33,8 @@ async function valido(req, segredo) {
 const json = (obj, status = 200, headers = {}) =>
   new Response(JSON.stringify(obj), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', ...headers } });
 
-export async function onRequest({ request, env, next }) {
+async function handle(request, env) {
+  const next = () => env.ASSETS.fetch(request);
   const url = new URL(request.url);
   const p = url.pathname;
   const segredo = env.ACCESS_TOKEN;
@@ -68,3 +69,5 @@ export async function onRequest({ request, env, next }) {
   r.headers.set('cache-control', 'private, max-age=300, must-revalidate');
   return r;
 }
+
+export default { fetch: handle };

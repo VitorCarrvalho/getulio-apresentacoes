@@ -6,3 +6,5 @@ __pycache__/
 /tmp/
 cloudflare.zip
 .wrangler/
+Claude outputs/
+.dev.vars
