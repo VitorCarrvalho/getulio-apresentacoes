@@ -1,15 +1,7 @@
-// Configuração do Worker no Cloudflare. O deploy acontece sozinho a cada push na main.
+// Configuração do projeto Cloudflare Pages. Faz o Cloudflare publicar só a pasta publicar/,
+// mesmo que o painel esteja com outra pasta. A pasta functions/ (token) é detectada sozinha.
 {
   "name": "getulio-apresentacoes",
-  "main": "src/worker.js",
-  "compatibility_date": "2026-11-01",
-  "assets": {
-    "directory": "./publicar",
-    "binding": "ASSETS",
-    "run_worker_first": true,
-    "html_handling": "auto-trailing-slash",
-    "not_found_handling": "none"
-  },
-  "keep_vars": true,
-  "observability": { "enabled": true }
+  "pages_build_output_dir": "./publicar",
+  "compatibility_date": "2026-11-01"
 }
