@@ -1,0 +1,175 @@
+{
+ "_nota": "Estimativa inicial de minutos por tela (palestra completa: 120 min). Ajuste quando o Getúlio corrigir algum tempo. Blocos = telas que costumam sair ou ficar juntas.",
+ "total_min": 120,
+ "minutos": {
+  "s-capa": 0.9,
+  "s-vid1": 3.7,
+  "s-livro": 1.9,
+  "s-3p": 0.9,
+  "s-q1": 1.9,
+  "s-q2": 1.9,
+  "s-q3": 1.9,
+  "s-p1": 0.9,
+  "s-p2": 0.5,
+  "s-p3": 0.5,
+  "s-bio": 3.7,
+  "s-lab": 2.8,
+  "s-emp": 1.9,
+  "s-quem": 0.9,
+  "s-chev": 7.4,
+  "s-hist": 0.9,
+  "s-time": 1.9,
+  "s-160": 5.6,
+  "s-vir": 2.8,
+  "s-mesmas": 1.9,
+  "s-dois": 2.8,
+  "s-quem2": 5.6,
+  "s-energia": 1.9,
+  "s-pod": 4.7,
+  "s-2pod": 2.8,
+  "s-ext": 2.8,
+  "s-7": 2.8,
+  "s-dom": 1.9,
+  "s-pil": 6.5,
+  "s-posi": 2.8,
+  "s-ocupa": 1.9,
+  "s-pont": 2.8,
+  "s-ciclo": 2.8,
+  "s-disc": 2.8,
+  "s-mesas": 4.7,
+  "s-agua": 1.9,
+  "s-cur": 2.8,
+  "s-conte": 2.8,
+  "s-func": 0.9,
+  "s-prova1": 2.8,
+  "s-prova2": 2.8,
+  "s-cult": 1.9,
+  "s-sem": 2.8,
+  "s-vid2": 3.7,
+  "s-prom": 1.9,
+  "s-fim": 1.9
+ },
+ "blocos": [
+  {
+   "nome": "Abertura",
+   "telas": [
+    "s-capa",
+    "s-vid1",
+    "s-livro"
+   ]
+  },
+  {
+   "nome": "As 3 perguntas",
+   "telas": [
+    "s-3p",
+    "s-q1",
+    "s-q2",
+    "s-q3",
+    "s-p1",
+    "s-p2",
+    "s-p3"
+   ]
+  },
+  {
+   "nome": "Quem é o Getúlio",
+   "telas": [
+    "s-bio",
+    "s-lab",
+    "s-emp"
+   ]
+  },
+  {
+   "nome": "História do Chevette",
+   "telas": [
+    "s-quem",
+    "s-chev",
+    "s-hist"
+   ]
+  },
+  {
+   "nome": "O time que você constrói",
+   "telas": [
+    "s-time",
+    "s-160",
+    "s-vir",
+    "s-mesmas",
+    "s-dois"
+   ]
+  },
+  {
+   "nome": "Adiador, Mudador, Fazedor, Superador",
+   "telas": [
+    "s-quem2"
+   ]
+  },
+  {
+   "nome": "Os 7 poderes",
+   "telas": [
+    "s-energia",
+    "s-pod",
+    "s-2pod",
+    "s-ext",
+    "s-7",
+    "s-dom"
+   ]
+  },
+  {
+   "nome": "A mão e os 5 pilares",
+   "telas": [
+    "s-pil"
+   ]
+  },
+  {
+   "nome": "Posicione-se",
+   "telas": [
+    "s-posi",
+    "s-ocupa",
+    "s-pont",
+    "s-ciclo"
+   ]
+  },
+  {
+   "nome": "Obesidade cerebral e Mesa do Ser",
+   "telas": [
+    "s-disc",
+    "s-mesas",
+    "s-agua"
+   ]
+  },
+  {
+   "nome": "Liderança Curativa",
+   "telas": [
+    "s-cur",
+    "s-conte"
+   ]
+  },
+  {
+   "nome": "Provas",
+   "telas": [
+    "s-func",
+    "s-prova1",
+    "s-prova2",
+    "s-cult"
+   ]
+  },
+  {
+   "nome": "O semeador",
+   "telas": [
+    "s-sem"
+   ]
+  },
+  {
+   "nome": "Vídeo dos líderes",
+   "telas": [
+    "s-vid2"
+   ]
+  },
+  {
+   "nome": "Encerramento",
+   "telas": [
+    "s-prom",
+    "s-fim"
+   ]
+  }
+ ]
+}
