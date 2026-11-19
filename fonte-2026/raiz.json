@@ -10,8 +10,15 @@
   "texto": "fonte-2026/ppt_text.json",
   "especiais": {},
   "repetidas": {
-    "s-capa": "s-capa2",
-    "s-p2": "s-p2b",
-    "s-7": "s-7a"
+    "s-capa": [
+      "s-capa2"
+    ],
+    "s-p2": [
+      "s-p2b"
+    ],
+    "s-7": [
+      "s-7a",
+      "s-2pod"
+    ]
   }
 }

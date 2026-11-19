@@ -141,3 +141,30 @@ html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{displ
 }
 </style>
 <style>@media (min-aspect-ratio:2/1){#s-sem .art{width:min(48%,1350u)}}</style>
+<style>
+/* 44-45: mesmo "6" desenhado do 7 */
+#s-2pod .side{max-width:1100u}
+#s-2pod .side h2{font-size:72u;margin-top:30u;line-height:1.1}
+#s-2pod .t1{font-size:64u}
+#s-2pod .t1b{font-size:44u;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:14u}
+#s-2pod .sub{margin-top:40u}
+@media (max-aspect-ratio:1/1){#s-2pod .body{flex-direction:column;align-items:flex-start}}
+</style>
+<style>
+/* telas douradas: o destaque dourado vira texto escuro (igual às telas douradas da produção) */
+.goldbg .g{color:inherit}
+.goldbg h2,.goldbg p,.goldbg .big{color:var(--bg)}
+#s-3p.goldbg .vl{background:var(--bg)}
+#s-3p.goldbg .big{color:var(--bg)}
+.goldbg .k{color:var(--bg);opacity:.75}
+/* 14: cards mais justos, número sempre dentro da caixa */
+#s-lab .card{padding:44u 26u;min-width:0}
+#s-lab .card .n{font-size:72u}
+#s-lab .card .l{font-size:28u}
+/* 56, 58 ... 68: a frase de cada momento entra em fundo dourado */
+.mom::before{content:"";position:absolute;inset:0;background:var(--gold);clip-path:circle(0% at 50% 55%);transition:clip-path .5s var(--ease2);z-index:0}
+.mom[data-step="1"]::before{clip-path:circle(80% at 50% 55%);transition:clip-path 1.25s var(--ease2) .05s}
+.mom[data-step="1"] .fr{color:var(--bg)}
+.mom[data-step="1"] .fr .g{color:inherit}
+.mom[data-step="1"] .bign text{stroke:var(--bg);fill:var(--bg);transition:stroke .6s,fill .6s}
+</style>

@@ -36,7 +36,7 @@ def dup_ids(css, pares):
         sel = m.group(1)
         if sel.lstrip().startswith('@'): return m.group(0)
         partes = sel.split(',')
-        extra = [x.replace('#' + a, '#' + b) for x in partes for a, b in pares.items() if re.search('#' + re.escape(a) + r'(?![\w-])', x)]
+        extra = [re.sub('#' + re.escape(a) + r'(?![\w-])', '#' + b, x) for x in partes for a, bs in pares.items() for b in ([bs] if isinstance(bs, str) else bs) if re.search('#' + re.escape(a) + r'(?![\w-])', x)]
         return (','.join(partes + extra) if extra else sel) + '{'
     css = re.sub(r'/\*.*?\*/', '', css, flags=re.S)
     return re.sub(r'([^{}]+)\{', fix, css)
@@ -76,6 +76,8 @@ def carrega_raiz(nome):
         script = script.replace("slides[S.i] && slides[S.i].dataset.video ?", "slides[S.i] && (slides[S.i].dataset.video || slides[S.i].dataset.videoFile) ?")
         # data-in="2,3": elemento visível só nesses passos
         script = script.replace("  $$('[data-active]', s).forEach(", "  $$('[data-in]', s).forEach(e => e.classList.toggle('vis', e.dataset.in.split(',').includes(String(st))));\n  $$('[data-active]', s).forEach(", 1)
+        script = script.replace("  foot.classList.toggle('dk', s.dataset.foot === 'dk');", "  foot.classList.toggle('dk', s.dataset.foot === 'dk' || (s.dataset.goldStep !== undefined && +s.dataset.goldStep === st));", 1)
+        assert 'goldStep' in script
         script = script.replace('`Tela ${S.i + 1} de 46 · slide ${S.pn} do roteiro`', '`Tela ${S.i + 1} de ${S.steps.length} · slide ${S.pn}`')
         for a in ['const YTVideo', 'const LocalVideo', "[data-in]", 'const NOTES_BY_ID = {\n "s-capa"']:
             assert a in script, f'raiz {nome}: falhou o ajuste do script ({a})'
@@ -122,7 +124,7 @@ def build_deck(cfg):
     if cfg.get('numerado'):
         # rascunho de trabalho: cada tela mostra o número do slide do roteiro (some na versão aprovada)
         body = body.replace('<body>', '<body class="numerado">\n<div id="pnum" aria-hidden="true"></div>', 1)
-        head = head.replace('</head>', '<style>#pnum{position:fixed;left:50%;transform:translateX(-50%);top:18px;z-index:60;min-width:54px;text-align:center;font:700 26px/1 Montserrat,sans-serif;color:#141416;background:#D4AF37;padding:9px 14px;border-radius:12px;font-variant-numeric:tabular-nums;pointer-events:none}html[data-role="presenter"] #pnum{display:none}body.vidon #pnum{opacity:.35}</style></head>')
+        head = head.replace('</head>', '<style>#pnum{position:fixed;left:50%;transform:translateX(-50%);top:18px;z-index:60;min-width:54px;text-align:center;font:700 26px/1 Montserrat,sans-serif;color:#D4AF37;background:#141416;border:1px solid #D4AF37;padding:9px 14px;border-radius:12px;font-variant-numeric:tabular-nums;pointer-events:none}html[data-role="presenter"] #pnum{display:none}body.vidon #pnum{opacity:.35}</style></head>')
         script = script.replace("  footNum.textContent = nums ?", "  const pnEl = document.getElementById('pnum'); if (pnEl) pnEl.textContent = String(nums ? nums[Math.min(st, nums.length - 1)] : (s.dataset.num || '')).padStart(2, '0');\n  footNum.textContent = nums ?", 1)
         assert 'pnEl' in script
     lp = logo_path(slug, cfg)

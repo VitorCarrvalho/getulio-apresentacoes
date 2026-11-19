@@ -304,20 +304,29 @@ body:not(.idle) .ctl{opacity:.9}
 #s-7 .body,
 
 
-#s-7a .body{flex-direction:row;align-items:center;gap:calc(var(--u)*60)}
+#s-7a .body,
+
+
+#s-2pod .body{flex-direction:row;align-items:center;gap:calc(var(--u)*60)}
 #s-7 svg.seven,
-#s-7a svg.seven{flex:0 0 auto;width:calc(var(--u)*360);height:calc(var(--u)*520);overflow:visible}
+#s-7a svg.seven,
+#s-2pod svg.seven{flex:0 0 auto;width:calc(var(--u)*360);height:calc(var(--u)*520);overflow:visible}
 #s-7 .seven text,
-#s-7a .seven text{font-family:var(--sans);font-weight:700;font-size:494px;fill:var(--gold);fill-opacity:0;stroke:var(--gold);stroke-width:2.5;stroke-dasharray:2600;stroke-dashoffset:2600}
+#s-7a .seven text,
+#s-2pod .seven text{font-family:var(--sans);font-weight:700;font-size:494px;fill:var(--gold);fill-opacity:0;stroke:var(--gold);stroke-width:2.5;stroke-dasharray:2600;stroke-dashoffset:2600}
 #s-7.on .seven text,
-#s-7a.on .seven text{animation:seven 2.4s var(--ease2) .3s forwards}
+#s-7a.on .seven text,
+#s-2pod.on .seven text{animation:seven 2.4s var(--ease2) .3s forwards}
 @keyframes seven{55%{stroke-dashoffset:0;fill-opacity:0}100%{stroke-dashoffset:0;fill-opacity:1;stroke-opacity:0}}
 #s-7 .t1,
-#s-7a .t1{font-size:calc(var(--u)*64)}
+#s-7a .t1,
+#s-2pod .t1{font-size:calc(var(--u)*64)}
 #s-7 h2,
-#s-7a h2{font-size:calc(var(--u)*148);margin-top:calc(var(--u)*10)}
+#s-7a h2,
+#s-2pod h2{font-size:calc(var(--u)*148);margin-top:calc(var(--u)*10)}
 #s-7 .t3,
-#s-7a .t3{font-size:calc(var(--u)*37);margin-top:calc(var(--u)*24);max-width:calc(var(--u)*1000)}
+#s-7a .t3,
+#s-2pod .t3{font-size:calc(var(--u)*37);margin-top:calc(var(--u)*24);max-width:calc(var(--u)*1000)}
 
 
 #s-pil .body{position:relative;display:block}
@@ -458,7 +467,7 @@ body:not(.idle) .ctl{opacity:.9}
   .photo{width:100vw;opacity:.35}
   .withphoto .frame,#s-fim.withphoto .frame{padding-right:calc(var(--u)*70)}
   #s-lab .cards,#s-vir .cards,#s-pod .grid,#s-mesas .grid{grid-template-columns:1fr 1fr}
-  #s-quem2 .body,#s-3p .body,#s-7 .body,#s-ext .body,.prova .body,#s-7a .body{flex-direction:column;align-items:flex-start}
+  #s-quem2 .body,#s-3p .body,#s-7 .body,#s-ext .body,.prova .body,#s-7a .body,#s-2pod .body{flex-direction:column;align-items:flex-start}
   #s-pil .blk{width:100%} #s-pil .hand{opacity:.25}
 }
 
@@ -537,7 +546,10 @@ html[data-role="mirror"] #hud,html[data-role="mirror"] .ctl,html[data-role="mirr
 #s-7 .t1b,
 
 
-#s-7a .t1b{font-size:calc(var(--u)*44);font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:calc(var(--u)*14)}
+#s-7a .t1b,
+
+
+#s-2pod .t1b{font-size:calc(var(--u)*44);font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:calc(var(--u)*14)}
 #s-7a h2{font-size:calc(var(--u)*120)}
 
 
@@ -617,7 +629,34 @@ html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{displ
 }
 </style>
 <style>@media (min-aspect-ratio:2/1){#s-sem .art{width:min(48%,calc(var(--u)*1350))}}</style>
-<style>#pnum{position:fixed;left:50%;transform:translateX(-50%);top:18px;z-index:60;min-width:54px;text-align:center;font:700 26px/1 Montserrat,sans-serif;color:#141416;background:#D4AF37;padding:9px 14px;border-radius:12px;font-variant-numeric:tabular-nums;pointer-events:none}html[data-role="presenter"] #pnum{display:none}body.vidon #pnum{opacity:.35}</style></head>
+<style>
+
+#s-2pod .side{max-width:calc(var(--u)*1100)}
+#s-2pod .side h2{font-size:calc(var(--u)*72);margin-top:calc(var(--u)*30);line-height:1.1}
+#s-2pod .t1{font-size:calc(var(--u)*64)}
+#s-2pod .t1b{font-size:calc(var(--u)*44);font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:calc(var(--u)*14)}
+#s-2pod .sub{margin-top:calc(var(--u)*40)}
+@media (max-aspect-ratio:1/1){#s-2pod .body{flex-direction:column;align-items:flex-start}}
+</style>
+<style>
+
+.goldbg .g{color:inherit}
+.goldbg h2,.goldbg p,.goldbg .big{color:var(--bg)}
+#s-3p.goldbg .vl{background:var(--bg)}
+#s-3p.goldbg .big{color:var(--bg)}
+.goldbg .k{color:var(--bg);opacity:.75}
+
+#s-lab .card{padding:calc(var(--u)*44) calc(var(--u)*26);min-width:0}
+#s-lab .card .n{font-size:calc(var(--u)*72)}
+#s-lab .card .l{font-size:calc(var(--u)*28)}
+
+.mom::before{content:"";position:absolute;inset:0;background:var(--gold);clip-path:circle(0% at 50% 55%);transition:clip-path .5s var(--ease2);z-index:0}
+.mom[data-step="1"]::before{clip-path:circle(80% at 50% 55%);transition:clip-path 1.25s var(--ease2) .05s}
+.mom[data-step="1"] .fr{color:var(--bg)}
+.mom[data-step="1"] .fr .g{color:inherit}
+.mom[data-step="1"] .bign text{stroke:var(--bg);fill:var(--bg);transition:stroke .6s,fill .6s}
+</style>
+<style>#pnum{position:fixed;left:50%;transform:translateX(-50%);top:18px;z-index:60;min-width:54px;text-align:center;font:700 26px/1 Montserrat,sans-serif;color:#D4AF37;background:#141416;border:1px solid #D4AF37;padding:9px 14px;border-radius:12px;font-variant-numeric:tabular-nums;pointer-events:none}html[data-role="presenter"] #pnum{display:none}body.vidon #pnum{opacity:.35}</style></head>
 <body class="numerado">
 <div id="pnum" aria-hidden="true"></div>
 <div id="hint">F · tela cheia &nbsp;&nbsp; P · modo apresentador &nbsp;&nbsp; → avançar</div>
@@ -673,7 +712,7 @@ html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{displ
 </section>
 
 <!-- 6 · 3 PERGUNTAS -->
-<section class="slide" id="s-3p" data-num="6">
+<section class="slide goldbg" id="s-3p" data-num="6" data-foot="dk">
   <div class="frame"><div class="body">
     <div class="big in" style="--d:0">3</div>
     <div class="vl"></div>
@@ -684,30 +723,21 @@ html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{displ
 <!-- 7-9 · PERGUNTAS -->
 <section class="slide perg" id="s-q1" data-num="7">
   <div class="frame">
-    <div class="top in" style="--d:0"><div></div><div class="dots"><i class="a"></i><i></i><i></i></div></div>
     <div class="body">
-      <div class="num in" style="--d:.15" data-n="01"></div>
-      <div class="hl"></div>
       <h2 class="h" data-words data-delay="0.8">O que transforma plano em <span class="g">resultado</span>?</h2>
     </div>
   </div>
 </section>
 <section class="slide perg" id="s-q2" data-num="8">
   <div class="frame">
-    <div class="top in" style="--d:0"><div></div><div class="dots"><i></i><i class="a"></i><i></i></div></div>
     <div class="body">
-      <div class="num in" style="--d:.15" data-n="02"></div>
-      <div class="hl"></div>
       <h2 class="h" data-words data-delay="0.8">O que separa <span class="g">crescimento</span> de colapso?</h2>
     </div>
   </div>
 </section>
 <section class="slide perg" id="s-q3" data-num="9">
   <div class="frame">
-    <div class="top in" style="--d:0"><div></div><div class="dots"><i></i><i></i><i class="a"></i></div></div>
     <div class="body">
-      <div class="num in" style="--d:.15" data-n="03"></div>
-      <div class="hl"></div>
       <h2 class="h" data-words data-delay="0.8">O que faz o negócio <span class="g">existir</span> além de você?</h2>
     </div>
   </div>
@@ -717,7 +747,7 @@ html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{displ
 <section class="slide stmt" id="s-p1" data-num="10">
   <div class="frame"><div class="body"><h2 class="h" data-words data-delay="0.2">Pessoas</h2></div></div>
 </section>
-<section class="slide stmt" id="s-p2" data-num="11" data-tr="fade">
+<section class="slide stmt goldbg" id="s-p2" data-num="11" data-tr="fade" data-foot="dk">
   <div class="frame"><div class="body"><h2 class="h" data-words data-delay="0.15">Pessoas <span class="g">certas</span></h2></div></div>
 </section>
 
@@ -764,7 +794,7 @@ html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{displ
       <div class="card tc in" style="--d:.42"><div class="l">Mais de</div><div class="n" data-count>130</div><div class="l">lojas e escritórios</div></div>
       <div class="card tc in" style="--d:.54"><div class="l">Mais de</div><div class="n" data-count>1.500</div><div class="l">colaboradores</div></div>
       <div class="card tc in" style="--d:.66"><div class="l">Mais de</div><div class="n" data-count>20</div><div class="l">eventos por ano</div></div>
-      <div class="card tc in" style="--d:.78"><div class="l">Mais de</div><div class="n sm" data-count>R$ 500 mi</div><div class="l">de faturamento por ano</div></div>
+      <div class="card tc in" style="--d:.78"><div class="l">Mais de</div><div class="n" data-count>R$ 500</div><div class="l">milhões de faturamento por ano</div></div>
     </div>
   </div></div>
 </section>
@@ -792,10 +822,10 @@ html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{displ
 <section class="slide stmt" id="s-p2b" data-num="17">
   <div class="frame"><div class="body"><h2 class="h" data-words data-delay="0.2">Pessoas <span class="g">certas</span></h2></div></div>
 </section>
-<section class="slide stmt" id="s-p3" data-num="18" data-tr="fade">
+<section class="slide stmt goldbg" id="s-p3" data-num="18" data-tr="fade" data-foot="dk">
   <div class="frame"><div class="body"><h2 class="h" data-words data-delay="0.15">Ter <span class="g">time</span> certo</h2></div></div>
 </section>
-<section class="slide" id="s-time" data-num="19">
+<section class="slide goldbg" id="s-time" data-num="19" data-foot="dk">
   <div class="frame">
     <div class="body"><h2 class="h lead" data-words data-delay="0.3">O <span class="g">time</span> que você quer é o time que <span class="g">você constrói.</span></h2></div>
   </div>
@@ -871,7 +901,7 @@ html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{displ
 </section>
 
 <!-- 41 · POSICIONE-SE -->
-<section class="slide" id="s-posi" data-num="41">
+<section class="slide goldbg" id="s-posi" data-num="41" data-foot="dk">
   <div class="frame">
     <div class="k in" style="--d:0">POSICIONE-SE</div>
     <div class="body"><h2 class="h" data-words data-delay="0.3" data-step-ms="70">Lidere com <span class="g">coragem</span>, assuma <span class="g">responsabilidades</span> e <span class="g">inspire</span> os outros <span class="g">com ações</span>, não apenas palavras.</h2></div>
@@ -909,10 +939,14 @@ html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{displ
 
 <!-- 44-45 · DOIS PODERES (1 clique) -->
 <section class="slide" id="s-2pod" data-num="44" data-nums="44,45" data-steps="1">
-  <div class="frame"><div class="body">
-    <div class="k in" style="--d:0">6 FONTES DE PODER DO LÍDER</div>
-    <h2 class="h" data-words data-delay="0.4">Todo líder usa instintivamente <span class="g">2 poderes</span></h2>
-    <p class="sub m bx" data-show="1">Mas deve saber usar todos quando necessário</p>
+  <div class="frame"><div class="body six-row">
+    <svg class="seven six" viewBox="0 0 360 520" aria-label="6"><text x="0" y="470">6</text></svg>
+    <div class="side">
+      <div class="t1 serif m in" style="--d:1.1">fontes de poder</div>
+      <div class="t1b in" style="--d:1.25">do líder</div>
+      <h2 class="h" data-words data-delay="1.5">Todo líder usa instintivamente <span class="g">2 poderes</span></h2>
+      <p class="sub m bx" data-show="1">Mas deve saber usar todos quando necessário</p>
+    </div>
   </div></div>
 </section>
 
@@ -1026,7 +1060,7 @@ html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{displ
 </section>
 
 <!-- 55-56 · MOMENTO 1 (1 clique) -->
-<section class="slide mom" id="s-m1" data-num="55" data-nums="55,56" data-steps="1">
+<section class="slide mom" id="s-m1" data-num="55" data-nums="55,56" data-steps="1" data-gold-step="1">
   <svg class="bign" viewBox="0 0 360 520" aria-hidden="true"><text x="180" y="470" text-anchor="middle">1</text></svg>
   <div class="frame"><div class="body">
     <div class="ttl bx" data-only="0"><div class="k">MOMENTO 1</div><h2 class="h">Admissão</h2></div>
@@ -1035,7 +1069,7 @@ html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{displ
 </section>
 
 <!-- 57-58 · MOMENTO 2 (1 clique) -->
-<section class="slide mom" id="s-m2" data-num="57" data-nums="57,58" data-steps="1">
+<section class="slide mom" id="s-m2" data-num="57" data-nums="57,58" data-steps="1" data-gold-step="1">
   <svg class="bign" viewBox="0 0 360 520" aria-hidden="true"><text x="180" y="470" text-anchor="middle">2</text></svg>
   <div class="frame"><div class="body">
     <div class="ttl bx" data-only="0"><div class="k">MOMENTO 2</div><h2 class="h">Onboarding</h2></div>
@@ -1044,7 +1078,7 @@ html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{displ
 </section>
 
 <!-- 59-60 · MOMENTO 3 (1 clique) -->
-<section class="slide mom" id="s-m3" data-num="59" data-nums="59,60" data-steps="1">
+<section class="slide mom" id="s-m3" data-num="59" data-nums="59,60" data-steps="1" data-gold-step="1">
   <svg class="bign" viewBox="0 0 360 520" aria-hidden="true"><text x="180" y="470" text-anchor="middle">3</text></svg>
   <div class="frame"><div class="body">
     <div class="ttl bx" data-only="0"><div class="k">MOMENTO 3</div><h2 class="h">Avaliação</h2></div>
@@ -1053,7 +1087,7 @@ html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{displ
 </section>
 
 <!-- 61-62 · MOMENTO 4 (1 clique) -->
-<section class="slide mom" id="s-m4" data-num="61" data-nums="61,62" data-steps="1">
+<section class="slide mom" id="s-m4" data-num="61" data-nums="61,62" data-steps="1" data-gold-step="1">
   <svg class="bign" viewBox="0 0 360 520" aria-hidden="true"><text x="180" y="470" text-anchor="middle">4</text></svg>
   <div class="frame"><div class="body">
     <div class="ttl bx" data-only="0"><div class="k">MOMENTO 4</div><h2 class="h">Feedback</h2></div>
@@ -1062,7 +1096,7 @@ html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{displ
 </section>
 
 <!-- 63-64 · MOMENTO 5 (1 clique) -->
-<section class="slide mom" id="s-m5" data-num="63" data-nums="63,64" data-steps="1">
+<section class="slide mom" id="s-m5" data-num="63" data-nums="63,64" data-steps="1" data-gold-step="1">
   <svg class="bign" viewBox="0 0 360 520" aria-hidden="true"><text x="180" y="470" text-anchor="middle">5</text></svg>
   <div class="frame"><div class="body">
     <div class="ttl bx" data-only="0"><div class="k">MOMENTO 5</div><h2 class="h">Advertência e disciplina</h2></div>
@@ -1071,7 +1105,7 @@ html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{displ
 </section>
 
 <!-- 65-66 · MOMENTO 6 (1 clique) -->
-<section class="slide mom" id="s-m6" data-num="65" data-nums="65,66" data-steps="1">
+<section class="slide mom" id="s-m6" data-num="65" data-nums="65,66" data-steps="1" data-gold-step="1">
   <svg class="bign" viewBox="0 0 360 520" aria-hidden="true"><text x="180" y="470" text-anchor="middle">6</text></svg>
   <div class="frame"><div class="body">
     <div class="ttl bx" data-only="0"><div class="k">MOMENTO 6</div><h2 class="h">Promoção</h2></div>
@@ -1080,7 +1114,7 @@ html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{displ
 </section>
 
 <!-- 67-68 · MOMENTO 7 (1 clique) -->
-<section class="slide mom" id="s-m7" data-num="67" data-nums="67,68" data-steps="1">
+<section class="slide mom" id="s-m7" data-num="67" data-nums="67,68" data-steps="1" data-gold-step="1">
   <svg class="bign" viewBox="0 0 360 520" aria-hidden="true"><text x="180" y="470" text-anchor="middle">7</text></svg>
   <div class="frame"><div class="body">
     <div class="ttl bx" data-only="0"><div class="k">MOMENTO 7</div><h2 class="h">Demissão</h2></div>
@@ -1089,7 +1123,7 @@ html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{displ
 </section>
 
 <!-- 69 · DÊ DINHEIRO -->
-<section class="slide stmt" id="s-ajuda" data-num="69">
+<section class="slide stmt goldbg" id="s-ajuda" data-num="69" data-foot="dk">
   <div class="frame"><div class="body"><h2 class="h" data-words data-delay="0.3">Quer ajudar? Dê dinheiro, <span class="g">não dê emprego.</span></h2></div></div>
 </section>
 
@@ -1499,7 +1533,7 @@ function go(i, st, dir = 1) {
   const pnEl = document.getElementById('pnum'); if (pnEl) pnEl.textContent = String(nums ? nums[Math.min(st, nums.length - 1)] : (s.dataset.num || '')).padStart(2, '0');
   footNum.textContent = nums ? nums[Math.min(st, nums.length - 1)] : (s.dataset.num || '');
   foot.classList.toggle('hide', s.hasAttribute('data-nofoot'));
-  foot.classList.toggle('dk', s.dataset.foot === 'dk');
+  foot.classList.toggle('dk', s.dataset.foot === 'dk' || (s.dataset.goldStep !== undefined && +s.dataset.goldStep === st));
   $$('#hud i').forEach((d, k) => d.classList.toggle('on', k === i));
   if (window.__ROLE === 'audience') { if (typeof Sync !== 'undefined' && Sync) Sync.state(); }
   try { history.replaceState(null, '', location.search + '#' + (i + 1) + (st ? '.' + st : '')); } catch (e) {}
