@@ -72,6 +72,7 @@ async function ativar(env, slug) {
     if (alvo === 'original') novo.evento = 'Palestra original';
     arquivos.push({ path: 'edicoes/' + alvo + '/edicao.json', content: txt(novo) });
     arquivos.push({ path: 'edicoes/' + slug + '/edicao.json', sha: null });
+    try { await gh(env, '/contents/edicoes/' + slug + '/capa.webp?ref=' + BR); arquivos.push({ path: 'edicoes/' + slug + '/capa.webp', sha: null }); } catch (e) {}
     msg = 'Ativa rascunho ' + slug + ': vira "' + alvo + '"; versão anterior arquivada como ' + arq.slug;
   } else {
     arquivos.push({ path: 'edicoes/' + slug + '/edicao.json', content: txt(novo) });
