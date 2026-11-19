@@ -1,7 +1,7 @@
 {
   "slug": "original-rascunho",
   "titulo": "Como Encantar Seu Time",
-  "evento": "Novo modelo original (rascunho)",
+  "evento": "Novo modelo original",
   "cliente": "",
   "cidade": "",
   "data": "",
@@ -13,5 +13,6 @@
   "raiz": "2026",
   "logo": "",
   "qr": true,
-  "telas": "todas"
+  "telas": "todas",
+  "substitui": "original"
 }

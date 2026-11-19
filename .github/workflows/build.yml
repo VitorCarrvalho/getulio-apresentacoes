@@ -1,0 +1,23 @@
+# Quando o botão "Ativar" (ou qualquer commit) muda edicoes/, fonte/ ou ferramentas/, refaz a pasta publicar/ e publica.
+name: build
+on:
+  push:
+    branches: [main]
+    paths: ['edicoes/**', 'fonte/**', 'fonte-2026/**', 'ferramentas/build.py', 'catalogo/**']
+permissions:
+  contents: write
+concurrency: { group: build, cancel-in-progress: false }
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: python3 ferramentas/build.py
+      - name: publica se mudou
+        run: |
+          git add -A publicar
+          if git diff --cached --quiet; then echo "nada mudou"; exit 0; fi
+          git -c user.name="build" -c user.email="build@users.noreply.github.com" commit -m "Build automático: $(git log -1 --pretty=%s)"
+          git push

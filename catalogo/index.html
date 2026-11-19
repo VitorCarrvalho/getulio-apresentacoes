@@ -70,6 +70,25 @@ h1 span{color:var(--gold)}
 .empty{grid-column:1/-1;text-align:center;padding:80px 20px;color:var(--mut)}
 .empty b{display:block;font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-weight:500;font-size:28px;color:var(--cream);margin-bottom:8px}
 .past{opacity:.62}
+[hidden]{display:none!important}
+.tabs{margin-top:clamp(24px,3vw,40px);display:flex;gap:8px;border-bottom:1px solid var(--line)}
+.tab{background:none;border:0;border-bottom:2px solid transparent;padding:12px 18px 14px;font-size:15px;font-weight:700;letter-spacing:.04em;color:var(--mut);cursor:pointer;margin-bottom:-1px;transition:color .25s,border-color .25s}
+.tab:hover{color:var(--cream)}
+.tab[aria-selected="true"]{color:var(--gold);border-bottom-color:var(--gold)}
+.tab span{display:inline-block;min-width:22px;margin-left:6px;padding:2px 7px;border-radius:999px;background:var(--gold);color:#141416;font-size:12px}
+.tab span:empty{display:none}
+body.ras .bar{display:none}
+.acts{display:flex;gap:10px;padding:0 20px 20px;position:relative;z-index:2}
+.btn{flex:1;border-radius:999px;padding:12px 16px;font-size:13px;font-weight:700;letter-spacing:.12em;text-align:center;text-decoration:none;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--cream);transition:border-color .25s,background .25s,color .25s}
+.btn:hover{border-color:var(--mut2)}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#141416}
+.btn.gold:hover{filter:brightness(1.08)}
+.btn[disabled]{opacity:.5;cursor:default}
+.note{padding:0 20px 18px;font-size:12px;color:var(--mut);line-height:1.5}
+.tag.r{color:#141416;background:var(--gold);border-color:var(--gold)}
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);background:var(--bg2);border:1px solid var(--gold);color:var(--cream);border-radius:14px;padding:14px 22px;font-size:14px;max-width:min(560px,90vw);opacity:0;pointer-events:none;transition:opacity .4s,transform .4s var(--ease);z-index:20}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
 @media (prefers-reduced-motion:reduce){.in{animation:none;opacity:1;transform:none;filter:none}}
 </style>
 </head>
@@ -84,6 +103,11 @@ h1 span{color:var(--gold)}
     <a class="out in" style="--d:.4" href="/api/sair">SAIR</a>
   </header>
 
+  <nav class="tabs in" style="--d:.42">
+    <button class="tab" id="tabCat" aria-selected="true">Catálogo</button>
+    <button class="tab" id="tabRas" aria-selected="false">Rascunhos <span id="nRas"></span></button>
+  </nav>
+
   <div class="bar in" style="--d:.45">
     <label class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="q" type="search" placeholder="Buscar por evento, cliente ou cidade" aria-label="Buscar"></label>
@@ -97,10 +121,13 @@ h1 span{color:var(--gold)}
   </div>
 
   <div class="grid" id="grid"></div>
+  <div class="grid" id="gridRas" hidden></div>
+  <div class="toast" id="toast" role="status"></div>
 </div>
 
 <script>
-const DATA = {{DADOS}};
+const ALL = {{DADOS}};
+const DATA = ALL.filter(c => !c.rascunho), RAS = ALL.filter(c => c.rascunho);
 const CAT = { original: 'Original', empresa: 'Empresas', igreja: 'Igrejas', evento: 'Eventos' };
 const CAT1 = { original: 'ORIGINAL', empresa: 'EMPRESA', igreja: 'IGREJA', evento: 'EVENTO' };
 const MES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
@@ -114,7 +141,7 @@ try { favs = new Set(JSON.parse(localStorage.getItem('lds-favoritos') || '[]'));
 const saveFavs = () => { try { localStorage.setItem('lds-favoritos', JSON.stringify([...favs])); } catch (e) {} };
 
 /* temporária: sai do catálogo depois da data do evento (o link continua valendo) */
-const escondida = c => !c.fixa && (!c.data || c.data < hoje);
+const escondida = c => c.arquivada || (!c.fixa && (!c.data || c.data < hoje));
 const st = { q: '', cat: '', dur: 0, fav: false, old: false };
 
 function chips(el, items, key) {
@@ -151,7 +178,7 @@ function render() {
     const thumb = c.capa ? `<img src="${c.slug}/capa.webp" alt="" loading="lazy">`
       : `<div class="ph">${c.logo ? `<img src="${c.logo}" alt="">` : '<b>GETÚLIO CAVALCANTE</b>'}</div>`;
     const lg = c.logo ? `<img src="${c.logo}" alt="${esc(c.cliente)}">` : '<b>GC</b>';
-    const tags = `<span class="tag ${c.categoria === 'original' ? 'g' : ''}">${CAT1[c.categoria]}</span>` + (!c.fixa ? '<span class="tag">TEMPORÁRIA</span>' : '');
+    const tags = `<span class="tag ${c.categoria === 'original' ? 'g' : ''}">${CAT1[c.categoria]}</span>` + (c.arquivada ? '<span class="tag">ARQUIVADA</span>' : !c.fixa ? '<span class="tag">TEMPORÁRIA</span>' : '');
     const meta = [c.data ? `<span>${IC.cal}${fmtData(c.data)}</span>` : '', c.duracao ? `<span>${IC.clock}${c.duracao} min</span>` : '', `<span>${c.telas} telas</span>`].join('');
     return `<article class="card in${escondida(c) ? ' past' : ''}" style="--d:${(0.5 + i * 0.06).toFixed(2)}">
       <a class="open" href="${c.slug}/" aria-label="Abrir ${esc(nome)}"></a>
@@ -172,6 +199,49 @@ function render() {
   });
 }
 render();
+
+/* ---------- aba Rascunhos ---------- */
+const toast = t => { const el = document.getElementById('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('on'), 7000); };
+document.getElementById('nRas').textContent = RAS.length || '';
+function aba(r) {
+  document.body.classList.toggle('ras', r);
+  document.getElementById('tabCat').setAttribute('aria-selected', !r); document.getElementById('tabRas').setAttribute('aria-selected', r);
+  document.getElementById('grid').hidden = r; document.getElementById('gridRas').hidden = !r;
+  document.getElementById('count').textContent = '';
+  if (r) renderRas(); else render();
+  try { history.replaceState(null, '', r ? '#rascunhos' : location.pathname); } catch (e) {}
+}
+document.getElementById('tabCat').onclick = () => aba(false);
+document.getElementById('tabRas').onclick = () => aba(true);
+function renderRas() {
+  const g = document.getElementById('gridRas');
+  if (!RAS.length) { g.innerHTML = '<div class="empty"><b>Nenhum rascunho.</b>Quando o Claude subir uma apresentação nova, ela aparece aqui antes de ir para o catálogo.</div>'; return; }
+  g.innerHTML = RAS.map((c, i) => {
+    const nome = c.evento || c.titulo;
+    const thumb = c.capa ? `<img src="${c.slug}/capa.webp" alt="" loading="lazy">` : `<div class="ph">${c.logo ? `<img src="${c.logo}" alt="">` : '<b>GETÚLIO CAVALCANTE</b>'}</div>`;
+    const alvo = c.substitui ? `Ao ativar, este rascunho vira a apresentação <b>${esc(c.substitui === 'original' ? 'Original' : c.substitui)}</b> do catálogo e a versão atual fica arquivada.` : 'Ao ativar, esta apresentação entra no catálogo.';
+    return `<article class="card in" style="--d:${(0.2 + i * 0.06).toFixed(2)}">
+      <div class="thumb">${thumb}<div class="tags"><span class="tag r">RASCUNHO</span></div></div>
+      <div class="info"><div class="lg"><b>GC</b></div><div class="txt">
+        <div class="ev">${esc(nome)}</div><div class="city">${esc(c.titulo)}</div>
+        <div class="meta">${c.duracao ? `<span>${IC.clock}${c.duracao} min</span>` : ''}<span>${c.telas} telas</span></div></div></div>
+      <div class="note">${alvo}</div>
+      <div class="acts"><a class="btn" href="${c.slug}/">ABRIR</a><button class="btn gold" data-ativar="${c.slug}">ATIVAR</button></div>
+    </article>`;
+  }).join('');
+  g.querySelectorAll('[data-ativar]').forEach(b => b.onclick = async () => {
+    const c = RAS.find(x => x.slug === b.dataset.ativar);
+    if (!confirm(`Ativar "${c.evento || c.titulo}"?` + (c.substitui ? '\n\nEle passa a ser a apresentação original do catálogo. A versão atual fica arquivada (continua acessível em "Mostrar temporárias e antigas").' : ''))) return;
+    b.disabled = true; b.textContent = 'ATIVANDO...';
+    try {
+      const r = await fetch('/api/ativar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ slug: c.slug }) });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(j.erro || 'Não deu certo.');
+      b.textContent = 'ATIVADO'; toast('Ativado. Em 2 a 3 minutos o catálogo já mostra a nova versão. Atualize a página.');
+    } catch (e) { b.disabled = false; b.textContent = 'ATIVAR'; toast(e.message); }
+  });
+}
+if (location.hash === '#rascunhos') aba(true);
 /* depois da primeira montagem, os cards não animam de novo a cada filtro */
 setTimeout(() => document.head.insertAdjacentHTML('beforeend', '<style>.grid .card.in{animation:none;opacity:1;transform:none;filter:none}</style>'), 2500);
 </script>

@@ -151,7 +151,7 @@ def build_deck(cfg):
     open(out, 'w', encoding='utf-8').write(html)
     capa = os.path.join(ED, slug, 'capa.webp')
     if os.path.exists(capa): shutil.copyfile(capa, os.path.join(os.path.dirname(out), 'capa.webp'))
-    print(f'  {slug:<24} {len(cfg["_telas"]):>2} telas  {len(html.encode())/1e6:.2f} MB' + ('  (rascunho: fora do catálogo)' if cfg.get('rascunho') else ''))
+    print(f'  {slug:<24} {len(cfg["_telas"]):>2} telas  {len(html.encode())/1e6:.2f} MB' + ('  (rascunho: aba Rascunhos)' if cfg.get('rascunho') else ''))
 
 def card(cfg):
     slug = cfg['slug']
@@ -170,10 +170,13 @@ def card(cfg):
         'telas': passos,
         'logo': data_uri(lp) if lp else '',
         'capa': os.path.exists(os.path.join(ED, slug, 'capa.webp')),
+        'rascunho': bool(cfg.get('rascunho')),
+        'substitui': cfg.get('substitui', ''),
+        'arquivada': bool(cfg.get('arquivada')),
     }
 
 def build_pages(cfgs):
-    dados = json.dumps([card(c) for c in cfgs if not c.get('rascunho')], ensure_ascii=False).replace('</', '<\\/')
+    dados = json.dumps([card(c) for c in cfgs], ensure_ascii=False).replace('</', '<\\/')
     for src, dst in [('index.html', 'apresentacoes/index.html'), ('entrar.html', 'entrar/index.html')]:
         page = read(os.path.join(CAT, src)).replace('{{FONTS}}', FONTS).replace('{{DADOS}}', dados)
         page = page.replace('{{IMG:capa}}', IMGS['capa'])
