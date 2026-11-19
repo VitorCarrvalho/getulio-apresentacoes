@@ -1,0 +1,143 @@
+<style>
+/* =========== Conteúdo 2026 (PPTX "Atitude Alphavile Novembro - Completo - 2026") sobre o design system da produção =========== */
+
+/* 4 · o que sustenta times */
+#s-sust h2{font-size:104u;max-width:950u;line-height:1.12}
+#s-sust .hl{height:3u;min-height:2px;width:640u;background:linear-gradient(90deg,var(--gold),transparent);margin:50u 0 30u;transform-origin:left;transform:scaleX(0)}
+#s-sust.on .hl{animation:sustline 1.6s var(--ease2) 1.2s forwards}
+@keyframes sustline{to{transform:none}}
+#s-sust .who{font-size:36u;color:var(--mut)}
+#s-sust .photo img{object-position:50% 20%}
+#s-capa .photo img,#s-capa2 .photo img{object-position:50% 20%}
+
+/* 5 · livro sem texto */
+#s-livro .bgimg img{height:100%;margin-top:0}
+
+/* 7-9 · número da pergunta é desenho, não texto */
+.perg .num::before{content:attr(data-n)}
+
+/* 10-11, 17 · pessoas */
+#s-p1 h2{font-size:217u}
+#s-p2b h2{font-size:178u}
+
+/* 14 · números do grupo */
+#s-lab .cards{margin-top:0}
+#s-lab .card .l:first-child{margin:0 0 18u;font-size:26u;color:var(--mut);letter-spacing:.04em}
+
+/* 19 */
+#s-time h2{font-size:104u;max-width:1500u}
+
+/* 25, 69 */
+#s-maior h2{font-size:104u}
+#s-ajuda h2{font-size:110u;max-width:1500u}
+
+/* 26-28 · 3 mesas (desenho de giz, Tech) */
+#s-mesas3 .ttl{display:flex;align-items:baseline;gap:26u;justify-content:center}
+#s-mesas3 .ttl .n{font-size:210u;font-weight:700;line-height:.8;color:var(--cream)}
+#s-mesas3 .ttl h2{font-size:120u;color:var(--gold)}
+#s-mesas3 .row{display:grid;grid-template-columns:repeat(3,minmax(0,470u));justify-content:center;gap:80u;margin-top:70u}
+#s-mesas3 .col{display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--bg2);border-radius:20u;padding:40u 30u 34u}
+#s-mesas3 .lb{font-size:58u;font-weight:700;line-height:1.1;min-height:120u;display:flex;flex-direction:column;justify-content:flex-end}
+#s-mesas3 .lb small{display:block;font-family:var(--serif);font-style:italic;font-weight:500;font-size:42u;color:var(--gold);margin-top:6u}
+#s-mesas3 .col img{width:300u;margin-top:24u}
+
+/* 29-40 · os 5 pilares: mão (29-30) e desenhos (31-40) */
+#s-pil .ov .n5{font-size:240u;font-weight:700;line-height:.8;color:var(--gold)}
+#s-pil .ov h2{font-size:84u;margin-top:24u;max-width:760u;line-height:1.08}
+#s-pil .ov h2 .g{display:block;font-size:.62em;margin-top:14u}
+#s-pil .pt h2{font-size:92u;margin-top:0;line-height:1.05;max-width:900u}
+#s-pil .pt .fr{font-size:58u;line-height:1.25;margin-top:60u;max-width:900u;font-weight:700}
+#s-pil[data-step="1"] .hand{transform:translateY(-50%)}
+#s-pil[data-step]:not([data-step="0"]):not([data-step="1"]) .hand{opacity:0;transform:translateY(-50%) scale(.9)}
+#s-pil .hand{transition:transform 1.2s var(--ease),opacity .9s var(--ease)}
+#s-pil .labs{position:absolute;inset:0;pointer-events:none}
+#s-pil .lab{position:absolute;transform:translate(calc(-100% - 26u),-50%);white-space:nowrap;font-weight:700;font-size:40u;opacity:0;filter:blur(6u);transition:opacity .6s var(--ease),filter .6s var(--ease)}
+#s-pil .lab::after{content:"";position:absolute;right:-22u;top:50%;width:14u;height:14u;border-radius:50%;background:var(--gold);transform:translateY(-50%)}
+#s-pil[data-step="1"] .lab{opacity:1;filter:none;transition:opacity .9s var(--ease) calc(var(--d) * 1s + .3s),filter .9s var(--ease) calc(var(--d) * 1s + .3s)}
+#s-pil .art{position:absolute;right:0;top:0;bottom:0;width:min(52%,1050u);z-index:1;pointer-events:none}
+#s-pil .art img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:right center;opacity:0;filter:blur(10u);transform:scale(1.03);transition:opacity 1.1s var(--ease),filter 1.1s var(--ease),transform 1.4s var(--ease)}
+#s-pil .art img.vis{opacity:1;filter:none;transform:none}
+#s-pil[data-step="3"] .art img.vis,#s-pil[data-step="5"] .art img.vis,#s-pil[data-step="7"] .art img.vis,#s-pil[data-step="9"] .art img.vis,#s-pil[data-step="11"] .art img.vis{opacity:.32}
+#s-pil .blk{z-index:2}
+
+/* 42, 47 · 7 fontes */
+#s-7 .t1b{font-size:44u;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:14u}
+#s-7a h2{font-size:120u}
+
+/* 44-45 */
+#s-2pod .sub{color:var(--gold);font-weight:700;font-size:56u}
+
+/* 46 · extintor (foto) */
+#s-ext .box.ph{width:420u;height:640u;border-radius:24u;overflow:hidden;background:none}
+#s-ext .box.ph img{width:100%;height:100%;object-fit:cover;object-position:30% 50%}
+#s-ext h2{font-size:72u}
+
+/* 48 */
+.goldbg .k{color:var(--bg);opacity:.75}
+
+/* 50 */
+#s-ciclo .txt .k{margin-top:24u}
+
+/* 51-53 · liderança curativa */
+#s-cur .body{flex-direction:row;align-items:center;gap:120u}
+#s-cur h2{margin-top:0}
+#s-cur .side{display:grid;gap:56u}
+#s-cur .it{font-size:72u;font-weight:700;line-height:1.05}
+#s-cur .strk{position:relative;display:inline-block;transition:color .6s var(--ease)}
+#s-cur .strk::after{content:"";position:absolute;left:-3%;right:-3%;top:54%;height:6u;min-height:2px;background:var(--gold);transform-origin:left;transform:scaleX(0);transition:transform .9s var(--ease2) .2s}
+#s-cur[data-step="2"] .strk{color:var(--mut)}
+#s-cur[data-step="2"] .strk::after{transform:none}
+
+/* 54 · 7 momentos */
+#s-mom7 h2{font-size:104u;margin-top:20u;line-height:1.02}
+#s-mom7 .list{display:grid;grid-template-columns:repeat(2,minmax(0,600u));gap:26u 80u;margin-top:60u}
+#s-mom7 .list li{list-style:none;font-size:44u;display:flex;gap:26u;align-items:baseline;font-weight:600}
+#s-mom7 .list b{color:var(--gold);font-variant-numeric:tabular-nums}
+
+/* 55-68 · cada momento: número gigante desenhado (como o 7) */
+.mom .bign{position:absolute;right:5%;top:50%;height:86%;width:auto;transform:translateY(-50%);z-index:0;overflow:visible}
+.mom .bign text{font-family:var(--sans);font-weight:700;font-size:520px;fill:var(--gold);fill-opacity:0;stroke:var(--gold);stroke-width:2.5;stroke-dasharray:2600;stroke-dashoffset:2600}
+.mom.on .bign text{animation:bign 2.4s var(--ease2) .2s forwards}
+@keyframes bign{to{stroke-dashoffset:0;fill-opacity:.1;stroke-opacity:.45}}
+html[data-role="mirror"] .mom .bign text{stroke-dashoffset:0;fill-opacity:.1;stroke-opacity:.45}
+.mom .frame{position:relative;z-index:2}
+.mom .body{display:grid;align-content:center}
+.mom .ttl,.mom .txt{grid-area:1/1}
+.mom .ttl h2{font-size:150u;line-height:1;margin-top:16u;max-width:1200u}
+.mom .fr{font-size:80u;line-height:1.2;max-width:1150u}
+
+/* 74-75 · semeador */
+#s-sem .art{position:absolute;right:0;top:0;bottom:0;width:min(56%,1350u);z-index:1;display:flex;align-items:center;justify-content:flex-end;transition:opacity 1.1s var(--ease)}
+#s-sem .art img{max-width:100%;max-height:100%;object-fit:contain;object-position:right center}
+#s-sem.on .art img{animation:photoin 2.4s var(--ease) both}
+#s-sem[data-step="1"] .art{opacity:.3}
+#s-sem .frame{position:relative;z-index:2}
+#s-sem .body{display:grid;align-content:center}
+#s-sem .ttl,#s-sem .txt{grid-area:1/1}
+#s-sem .ttl h2{font-size:120u}
+#s-sem .ttl .k{margin-top:24u;font-size:34u}
+#s-sem .lines{margin-top:0}
+#s-sem .lines span span{display:inline}
+#s-sem .fim{max-width:1100u}
+
+/* vídeo de arquivo (slide 16) */
+.vid .yt video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+.vid .pick{margin-top:40u;font-size:22u;color:var(--mut);text-align:center;line-height:1.6;opacity:0;transition:opacity .6s;max-width:900u}
+.vid.missing .pick{opacity:1}
+.vid .pick label{display:inline-block;margin:14u 0 6u;padding:12u 28u;border-radius:999px;border:1px solid rgba(212,175,55,.5);color:var(--gold);font-weight:700;cursor:pointer;font-size:22u}
+.vid .pick input{display:none}
+.vid.drop{box-shadow:inset 0 0 0 4px var(--gold)}
+html[data-role="mirror"] .vid .pick,html[data-role="presenter"] .vid .pick{display:none}
+
+@media (max-aspect-ratio:3/2){
+  #s-mesas3 .row{gap:40u}
+  #s-pil .art{width:56%}
+  #s-cur .body{gap:70u}
+}
+@media (max-aspect-ratio:1/1){
+  #s-cur .body{flex-direction:column;align-items:flex-start}
+  #s-pil .art,#s-sem .art{opacity:.25}
+  .mom .bign{opacity:.5}
+}
+</style>
+<style>@media (min-aspect-ratio:2/1){#s-sem .art{width:min(48%,1350u)}}</style>

@@ -149,7 +149,8 @@ body:not(.idle) .ctl{opacity:.9}
 .vid .yt{position:absolute;inset:0;z-index:5;background:#000;opacity:0;visibility:hidden;transition:opacity 1.2s var(--ease),visibility 0s 1.2s}
 .vid.playing .yt{opacity:1;visibility:visible;transition:opacity 1.2s var(--ease) .2s,visibility 0s}
 .vid.ended .yt{opacity:0;visibility:hidden}
-.vid .yt iframe{position:absolute;left:50%;top:50%;width:min(100vw,calc(100vh * 16 / 9));height:min(100vh,calc(100vw * 9 / 16));transform:translate(-50%,-50%);border:0;pointer-events:none}
+/* o player nasce em Full HD (1920x1080) e só é reduzido na tela: o YouTube escolhe a qualidade pelo tamanho do player, então entrega 1080p mesmo num painel baixo */
+.vid .yt iframe{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform:translate(-50%,-50%) scale(var(--yts,1));transform-origin:50% 50%;border:0;pointer-events:none}
 
 /* 3 · livro */
 #s-livro .bgimg{position:absolute;inset:0;z-index:0;display:flex;justify-content:center;background:var(--deep)}
@@ -1100,6 +1101,9 @@ function resetCounters() { counters.forEach(c => { cancelAnimationFrame(c.raf); 
    Só a janela do painel toca (espelhos do apresentador não carregam o vídeo, para não duplicar som).
    O player é criado ao entrar no slide (autoplay com som) e destruído ao sair (para o som na hora).
    O iframe não recebe foco: o passador continua comandando a apresentação. */
+/* escala do player do YouTube (nasce em 1920x1080, ver CSS) */
+function ytScale() { document.documentElement.style.setProperty('--yts', Math.min(innerWidth / 1920, innerHeight / 1080)); }
+ytScale(); addEventListener('resize', ytScale);
 const Video = (() => {
   let ifr = null, slide = null, playing = false, timer = null;
   const cmd = (func, args = []) => { try { ifr && ifr.contentWindow.postMessage(JSON.stringify({ event: 'command', func, args }), '*'); } catch (e) {} };
@@ -1111,7 +1115,8 @@ const Video = (() => {
     timer = setTimeout(() => {
       const origin = /^https?:/.test(location.protocol) ? '&origin=' + encodeURIComponent(location.origin) : '';
       ifr = document.createElement('iframe');
-      ifr.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&playsinline=1&modestbranding=1&controls=0&iv_load_policy=3&disablekb=1&fs=0&enablejsapi=1${origin}`;
+      ifr.width = 1920; ifr.height = 1080;
+      ifr.src = `https://www.youtube.com/embed/${id}?autoplay=1&vq=hd1080&rel=0&playsinline=1&modestbranding=1&controls=0&iv_load_policy=3&disablekb=1&fs=0&enablejsapi=1${origin}`;
       ifr.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
       ifr.referrerPolicy = 'strict-origin-when-cross-origin';
       ifr.setAttribute('tabindex', '-1'); ifr.title = 'Vídeo';

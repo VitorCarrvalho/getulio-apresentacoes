@@ -53,6 +53,24 @@ Regras da edição: `s-capa` e `s-fim` são obrigatórias. Só o logo entra (nen
 
 Ids das telas, na ordem: s-capa, s-vid1, s-livro, s-3p, s-q1, s-q2, s-q3, s-p1, s-p2, s-p3, s-bio, s-lab, s-emp, s-quem, s-chev, s-hist, s-time, s-160, s-vir, s-mesmas, s-dois, s-quem2 (22-26), s-energia, s-pod, s-2pod, s-ext, s-7, s-dom, s-pil (33-38), s-posi, s-ocupa, s-pont, s-ciclo, s-disc, s-mesas, s-agua, s-cur, s-conte, s-func, s-prova1, s-prova2, s-cult, s-sem, s-vid2, s-prom, s-fim.
 
+## Raízes de conteúdo (2025 e 2026)
+- **2025** (`fonte/`): a palestra antiga, 55 slides do primeiro PowerPoint. Hoje é a base da `original` e da `plamev`. Quando a 2026 for aprovada, a edição antiga fica arquivada no catálogo.
+- **2026** (`fonte-2026/`): conteúdo do PPTX "Atitude Alphavile Novembro - Completo - 2026" (77 slides, ~80 min), sobre o **mesmo design system** (head.html e script.html de `fonte/`).
+  - `parts/body.html` telas (data-num = slide do PPTX; data-nums nas telas com cliques); `parts/extra.css` estilos só desta raiz; `parts/video-local.js` vídeo de arquivo.
+  - `ppt_text.json` texto oficial (PPTX com as correções de português aprovadas pelo Getúlio). `notas.json` notas por slide. `raiz.json` duração, telas fixas e telas repetidas.
+  - Telas repetidas de propósito: capa (1 e 3), "Pessoas certas" (11 e 17), o 7 (42 e 47). O CSS de `#s-capa` vale para `#s-capa2` etc. (`repetidas` no raiz.json).
+  - `data-in="2,3"`: elemento visível só nesses passos (usado nos 5 pilares).
+- Edição escolhe a raiz com `"raiz": "2026"` no edicao.json (padrão 2025).
+
+## Rascunho
+- `"rascunho": true` publica a edição no endereço dela (protegido pelo token) mas **não** mostra card no catálogo.
+- `"numerado": true` mostra o número do slide do roteiro no topo de cada tela, para conversar tela a tela. Sai na versão aprovada.
+- Fluxo: todo modelo ou edição novo sobe primeiro como rascunho numerado. Só depois do "aprovado" do Getúlio tira `rascunho` e `numerado`.
+
+## Vídeos: qualidade
+- O player do YouTube nasce em 1920x1080 e é só reduzido na tela (`--yts`), com `vq=hd1080`. O YouTube escolhe a qualidade pelo tamanho do player; antes, no painel 3:1 (pouca altura em pixels), ele mandava 360p/480p.
+- Vídeo que não está no YouTube (`data-video-file`, ex.: vídeo da casa no slide 16): o Getúlio escolhe o arquivo uma vez no computador do painel (botão ou arrastar); fica guardado no navegador (IndexedDB) e toca sozinho nas próximas vezes.
+
 ## Rotina de mudança
 1. Edite `fonte/` ou `edicoes/` (nunca `publicar/`).
 2. `python3 ferramentas/build.py`
@@ -71,7 +89,7 @@ Ids das telas, na ordem: s-capa, s-vid1, s-livro, s-3p, s-q1, s-q2, s-q3, s-p1, 
 - Teste local: `ACCESS_TOKEN=x` em `.dev.vars` e `npx wrangler pages dev`.
 
 ## Regras do cliente (obrigatórias)
-1. **Texto 100% fiel ao PowerPoint.** Não altere, corrija nem "melhore" nenhuma palavra, acento ou pontuação. Depois de qualquer mudança, rode `node ferramentas/textcheck.js`: cada edição tem que dar `bad 0` e nenhuma linha `EXTRA`. Texto novo só entra se eu pedir.
+1. **Texto 100% fiel ao PowerPoint.** Não altere, corrija nem "melhore" nenhuma palavra, acento ou pontuação, exceto correções de português que o Getúlio aprovar (na raiz 2026 elas já estão no ppt_text.json). Depois de qualquer mudança, rode `node ferramentas/textcheck.js`: cada edição tem que dar `bad 0` e nenhuma linha `EXTRA`. Texto novo só entra se eu pedir.
 2. **Preserve a paleta, as imagens e a identidade:**
    - Fundos: #141416, #1A1A1D, #2C2C31.
    - Dourado: #D4AF37 (destaques). Creme: #F5F2EA (texto). Cinza: #8F8A82 (texto secundário). #8A6D16 é o kicker sobre fundo creme.

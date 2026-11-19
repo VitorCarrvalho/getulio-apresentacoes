@@ -1,13 +1,16 @@
 // Confere o texto de cada edição contra o PowerPoint original.
 //   node ferramentas/textcheck.js            todas as edições
 //   node ferramentas/textcheck.js premium    só uma
+// Textos marcados com data-ui (rótulos de vídeo, botões) são interface e não contam.
 // Regra: todo texto do PPT das telas incluídas tem que estar no HTML (bad 0) e nenhum texto pode sobrar (nenhuma linha EXTRA).
 // Telas tiradas de propósito na edição aparecem como "fora", não como erro. Na edição com "telas": "todas", faltar tela é erro.
 const { chromium } = require('playwright'); const fs = require('fs'); const path = require('path');
 const R = path.join(__dirname, '..');
-const ppt = JSON.parse(fs.readFileSync(path.join(R, 'original', 'ppt_text.json')));
-const special = { 1: 's-capa', 3: 's-livro', 55: 's-fim' };
-const all = Object.values(ppt).flat().map(t => t.replace(/\s+/g, ' ').trim()).filter(Boolean).sort((a, b) => b.length - a.length);
+// Cada raiz tem o seu texto oficial: 2025 = original/ppt_text.json; 2026 = fonte-2026/ppt_text.json (PPTX novo, com as correções aprovadas).
+function raiz(nome) {
+  if (nome === '2025') return { texto: 'original/ppt_text.json', especiais: { 1: 's-capa', 3: 's-livro', 55: 's-fim' } };
+  return JSON.parse(fs.readFileSync(path.join(R, 'fonte-' + nome, 'raiz.json')));
+}
 const alvo = process.argv.slice(2);
 const slugs = (alvo.length ? alvo : fs.readdirSync(path.join(R, 'edicoes'))).filter(s => fs.existsSync(path.join(R, 'edicoes', s, 'edicao.json')));
 
@@ -16,9 +19,12 @@ const slugs = (alvo.length ? alvo : fs.readdirSync(path.join(R, 'edicoes'))).fil
   for (const slug of slugs) {
     const cfg = JSON.parse(fs.readFileSync(path.join(R, 'edicoes', slug, 'edicao.json')));
     const todas = (cfg.telas || 'todas') === 'todas';
+    const rz = raiz(cfg.raiz || '2025'); const special = rz.especiais || {};
+    const ppt = JSON.parse(fs.readFileSync(path.join(R, rz.texto)));
+    const all = Object.values(ppt).flat().map(t => t.replace(/\s+/g, ' ').trim()).filter(Boolean).sort((a, b) => b.length - a.length);
     const p = await b.newPage();
     await p.goto('file://' + path.join(R, 'publicar', 'apresentacoes', slug, 'index.html') + '?mirror'); await p.waitForTimeout(500);
-    const secs = await p.evaluate(() => [...document.querySelectorAll('#deck .slide')].map(s => ({ id: s.id, num: s.dataset.num, nums: s.dataset.nums || '', txt: s.textContent.replace(/\s+/g, ' ') })));
+    const secs = await p.evaluate(() => [...document.querySelectorAll('#deck .slide')].map(s => { const c = s.cloneNode(true); c.querySelectorAll('[data-ui]').forEach(e => e.remove()); return { id: s.id, num: s.dataset.num, nums: s.dataset.nums || '', txt: c.textContent.replace(/\s+/g, ' ') }; }));
     let bad = 0, ok = 0, fora = 0; const log = [];
     for (const [n, boxes] of Object.entries(ppt)) {
       const sec = secs.find(s => special[n] ? s.id === special[n] : (s.num === n || s.nums.split(',').includes(n)));

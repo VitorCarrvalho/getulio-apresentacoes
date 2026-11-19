@@ -1,0 +1,17 @@
+{
+  "titulo": "Como Encantar Seu Time",
+  "descricao": "Conteúdo do PPTX 'Atitude Alphavile Novembro - Completo - 2026' (77 slides) sobre o design system da palestra de produção",
+  "pptx": "Atitude_Alphavile_Novembro_-_Completo_-_2026.pptx",
+  "duracao_min": 80,
+  "fixas": [
+    "s-capa",
+    "s-fim"
+  ],
+  "texto": "fonte-2026/ppt_text.json",
+  "especiais": {},
+  "repetidas": {
+    "s-capa": "s-capa2",
+    "s-p2": "s-p2b",
+    "s-7": "s-7a"
+  }
+}

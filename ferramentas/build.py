@@ -27,21 +27,71 @@ def conv_units(html):
 def read(p): return open(p, encoding='utf-8').read()
 
 FONTS = read(os.path.join(F, 'assets/fonts.css'))
-IMGS = json.load(open(os.path.join(F, 'assets/imgs.json')))
 ICONS = json.load(open(os.path.join(F, 'assets/icons.json')))
-HEAD = read(os.path.join(F, 'parts/head.html'))
-BODY = read(os.path.join(F, 'parts/body.html'))
-SCRIPT = read(os.path.join(F, 'parts/script.html'))
-
 SEC = re.compile(r'(?:<!--[^\n]*-->\n)?<section\b[^>]*\bid="([^"]+)"[\s\S]*?</section>\n*')
-secs = list(SEC.finditer(BODY))
-PRE, POST = BODY[:secs[0].start()], BODY[secs[-1].end():]
-SECTIONS = {m.group(1): m.group(0) for m in secs}
-ORDEM = [m.group(1) for m in secs]
-FIXAS = ['s-capa', 's-fim']          # capa e encerramento nunca saem
-CATEGORIAS = {'original', 'empresa', 'igreja', 'evento'}
-MIME = {'.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg'}
 
+def dup_ids(css, pares):
+    """Copia as regras de um id para outro (ex.: #s-capa -> #s-capa2), para telas repetidas."""
+    def fix(m):
+        sel = m.group(1)
+        if sel.lstrip().startswith('@'): return m.group(0)
+        partes = sel.split(',')
+        extra = [x.replace('#' + a, '#' + b) for x in partes for a, b in pares.items() if re.search('#' + re.escape(a) + r'(?![\w-])', x)]
+        return (','.join(partes + extra) if extra else sel) + '{'
+    css = re.sub(r'/\*.*?\*/', '', css, flags=re.S)
+    return re.sub(r'([^{}]+)\{', fix, css)
+
+def carrega_raiz(nome):
+    """Raiz = conteúdo-base de onde as edições escolhem telas.
+       2025: fonte/ (a palestra antiga, 55 slides).  2026: fonte-2026/ (conteúdo do PPTX novo sobre o mesmo design)."""
+    head = read(os.path.join(F, 'parts/head.html'))
+    script = read(os.path.join(F, 'parts/script.html'))
+    imgs = json.load(open(os.path.join(F, 'assets/imgs.json')))
+    if nome == '2025':
+        body = read(os.path.join(F, 'parts/body.html'))
+        cfg = {'fixas': ['s-capa', 's-fim'], 'texto': 'original/ppt_text.json', 'especiais': {'1': 's-capa', '3': 's-livro', '55': 's-fim'}}
+    else:
+        d = os.path.join(R, 'fonte-' + nome)
+        cfg = json.load(open(os.path.join(d, 'raiz.json'), encoding='utf-8'))
+        body = read(os.path.join(d, 'parts/body.html'))
+        head = head.replace('</head>', read(os.path.join(d, 'parts/extra.css')) + '</head>')
+        head = re.sub(r'(<style>)(.*?)(</style>)', lambda m: m.group(1) + dup_ids(m.group(2), cfg.get('repetidas', {})) + m.group(3), head, flags=re.S)
+        for fn in sorted(os.listdir(os.path.join(d, 'assets'))):
+            k, ext = os.path.splitext(fn)
+            if ext in MIME: imgs[k] = data_uri(os.path.join(d, 'assets', fn))
+        # notas do apresentador: uma por slide do PPTX, agrupadas por tela
+        notas = json.load(open(os.path.join(d, 'notas.json'), encoding='utf-8'))
+        nb = {}
+        for m in SEC.finditer(body):
+            tag = re.match(r'[^>]*>', m.group(0)[m.group(0).index('<section'):]).group(0)
+            nums = re.search(r'data-nums="([^"]+)"', tag) or re.search(r'data-num="([^"]+)"', tag)
+            nb[m.group(1)] = [notas.get(n, '') for n in nums.group(1).split(',')] if nums else ['']
+        js = 'const NOTES_BY_ID = ' + json.dumps(nb, ensure_ascii=False, indent=1) + ';\n'
+        script = re.sub(r'const NOTES_BY_ID = \{.*?\n\};\n', lambda m: js, script, count=1, flags=re.S)
+        # vídeos: YouTube (produção) + vídeo de arquivo (slides com data-video-file)
+        script = script.replace('const Video = (() => {', 'const YTVideo = (() => {', 1)
+        i = script.index('const YTVideo = (() => {'); j = script.index('\n})();\n', i) + len('\n})();\n')
+        script = script[:j] + read(os.path.join(d, 'parts/video-local.js')) + script[j:]
+        script = script.replace('if (slides[cur].dataset.video) {', 'if (slides[cur].dataset.video || slides[cur].dataset.videoFile) {')
+        script = script.replace("slides[S.i] && slides[S.i].dataset.video ?", "slides[S.i] && (slides[S.i].dataset.video || slides[S.i].dataset.videoFile) ?")
+        # data-in="2,3": elemento visível só nesses passos
+        script = script.replace("  $$('[data-active]', s).forEach(", "  $$('[data-in]', s).forEach(e => e.classList.toggle('vis', e.dataset.in.split(',').includes(String(st))));\n  $$('[data-active]', s).forEach(", 1)
+        script = script.replace('`Tela ${S.i + 1} de 46 · slide ${S.pn} do roteiro`', '`Tela ${S.i + 1} de ${S.steps.length} · slide ${S.pn}`')
+        for a in ['const YTVideo', 'const LocalVideo', "[data-in]", 'const NOTES_BY_ID = {\n "s-capa"']:
+            assert a in script, f'raiz {nome}: falhou o ajuste do script ({a})'
+    secs = list(SEC.finditer(body))
+    cfg.update(nome=nome, head=head, script=script, imgs=imgs,
+               pre=body[:secs[0].start()], post=body[secs[-1].end():],
+               sections={m.group(1): m.group(0) for m in secs}, ordem=[m.group(1) for m in secs])
+    return cfg
+
+RAIZES = {}
+def raiz(nome):
+    if nome not in RAIZES: RAIZES[nome] = carrega_raiz(nome)
+    return RAIZES[nome]
+MIME = {'.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg'}
+IMGS = json.load(open(os.path.join(F, 'assets/imgs.json')))
+CATEGORIAS = {'original', 'empresa', 'igreja', 'evento'}
 def data_uri(path):
     ext = os.path.splitext(path)[1].lower()
     return f'data:{MIME[ext]};base64,' + base64.b64encode(open(path, 'rb').read()).decode()
@@ -54,18 +104,27 @@ def load(slug):
     assert cfg['slug'] == slug, f'{slug}: slug diferente da pasta'
     assert re.fullmatch(r'[a-z0-9]+(-[a-z0-9]+)*', slug), f'{slug}: use só minúsculas, números e hífen'
     assert cfg.get('categoria') in CATEGORIAS, f'{slug}: categoria deve ser uma de {sorted(CATEGORIAS)}'
-    telas = ORDEM if cfg.get('telas', 'todas') == 'todas' else cfg['telas']
-    desconhecidas = [t for t in telas if t not in SECTIONS]
+    rz = raiz(cfg.get('raiz', '2025'))
+    telas = rz['ordem'] if cfg.get('telas', 'todas') == 'todas' else cfg['telas']
+    desconhecidas = [t for t in telas if t not in rz['sections']]
     assert not desconhecidas, f'{slug}: telas inexistentes {desconhecidas}'
     assert len(set(telas)) == len(telas), f'{slug}: tela repetida'
-    for t in FIXAS: assert t in telas, f'{slug}: {t} é obrigatória'
+    for t in rz['fixas']: assert t in telas, f'{slug}: {t} é obrigatória'
     if cfg.get('logo'): assert os.path.exists(logo_path(slug, cfg)), f'{slug}: logo não encontrado'
     cfg['_telas'] = telas
     return cfg
 
 def build_deck(cfg):
     slug = cfg['slug']
-    body = PRE + ''.join(SECTIONS[t] for t in cfg['_telas']) + POST
+    rz = raiz(cfg.get('raiz', '2025'))
+    body = rz['pre'] + ''.join(rz['sections'][t] for t in cfg['_telas']) + rz['post']
+    head, script = rz['head'], rz['script']
+    if cfg.get('numerado'):
+        # rascunho de trabalho: cada tela mostra o número do slide do roteiro (some na versão aprovada)
+        body = body.replace('<body>', '<body class="numerado">\n<div id="pnum" aria-hidden="true"></div>', 1)
+        head = head.replace('</head>', '<style>#pnum{position:fixed;left:50%;transform:translateX(-50%);top:18px;z-index:60;min-width:54px;text-align:center;font:700 26px/1 Montserrat,sans-serif;color:#141416;background:#D4AF37;padding:9px 14px;border-radius:12px;font-variant-numeric:tabular-nums;pointer-events:none}html[data-role="presenter"] #pnum{display:none}body.vidon #pnum{opacity:.35}</style></head>')
+        script = script.replace("  footNum.textContent = nums ?", "  const pnEl = document.getElementById('pnum'); if (pnEl) pnEl.textContent = String(nums ? nums[Math.min(st, nums.length - 1)] : (s.dataset.num || '')).padStart(2, '0');\n  footNum.textContent = nums ?", 1)
+        assert 'pnEl' in script
     lp = logo_path(slug, cfg)
     logo = ''
     if lp:
@@ -76,10 +135,10 @@ def build_deck(cfg):
     body = body.replace('{{CLIENT_LOGO}}', logo)
     if cfg.get('qr', True) is False:
         body = body.replace('\n      <div class="qr in" style="--d:2.8">{{QR}}</div>', '')
-    script = SCRIPT.replace('{{SYNC_SUFFIX}}', '' if slug == 'original' else '-' + slug)
-    html = conv_units(HEAD + body + script)
+    script = script.replace('{{SYNC_SUFFIX}}', '' if slug == 'original' else '-' + slug)
+    html = conv_units(head + body + script)
     html = html.replace('{{FONTS}}', FONTS)
-    html = re.sub(r'\{\{IMG:(\w+)\}\}', lambda m: IMGS[m.group(1)], html)
+    html = re.sub(r'\{\{IMG:(\w+)\}\}', lambda m: rz['imgs'][m.group(1)], html)
     html = re.sub(r'\{\{IC:(\w+)\}\}', lambda m: ICONS[m.group(1)], html)
     html = re.sub(r'\{\{LOGO:(\d+)\}\}', lambda m: read(os.path.join(F, f'assets/image-13-{m.group(1)}.svg')).replace('<svg ', '<svg role="img" preserveAspectRatio="xMidYMid meet" '), html)
     html = html.replace('{{QR}}', read(os.path.join(F, 'assets/qr.svg')))
@@ -90,7 +149,7 @@ def build_deck(cfg):
     open(out, 'w', encoding='utf-8').write(html)
     capa = os.path.join(ED, slug, 'capa.webp')
     if os.path.exists(capa): shutil.copyfile(capa, os.path.join(os.path.dirname(out), 'capa.webp'))
-    print(f'  {slug:<24} {len(cfg["_telas"]):>2} telas  {len(html.encode())/1e6:.2f} MB')
+    print(f'  {slug:<24} {len(cfg["_telas"]):>2} telas  {len(html.encode())/1e6:.2f} MB' + ('  (rascunho: fora do catálogo)' if cfg.get('rascunho') else ''))
 
 def card(cfg):
     slug = cfg['slug']
@@ -112,7 +171,7 @@ def card(cfg):
     }
 
 def build_pages(cfgs):
-    dados = json.dumps([card(c) for c in cfgs], ensure_ascii=False).replace('</', '<\\/')
+    dados = json.dumps([card(c) for c in cfgs if not c.get('rascunho')], ensure_ascii=False).replace('</', '<\\/')
     for src, dst in [('index.html', 'apresentacoes/index.html'), ('entrar.html', 'entrar/index.html')]:
         page = read(os.path.join(CAT, src)).replace('{{FONTS}}', FONTS).replace('{{DADOS}}', dados)
         page = page.replace('{{IMG:capa}}', IMGS['capa'])

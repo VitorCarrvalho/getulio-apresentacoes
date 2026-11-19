@@ -79,6 +79,9 @@ function resetCounters() { counters.forEach(c => { cancelAnimationFrame(c.raf); 
    Só a janela do painel toca (espelhos do apresentador não carregam o vídeo, para não duplicar som).
    O player é criado ao entrar no slide (autoplay com som) e destruído ao sair (para o som na hora).
    O iframe não recebe foco: o passador continua comandando a apresentação. */
+/* escala do player do YouTube (nasce em 1920x1080, ver CSS) */
+function ytScale() { document.documentElement.style.setProperty('--yts', Math.min(innerWidth / 1920, innerHeight / 1080)); }
+ytScale(); addEventListener('resize', ytScale);
 const Video = (() => {
   let ifr = null, slide = null, playing = false, timer = null;
   const cmd = (func, args = []) => { try { ifr && ifr.contentWindow.postMessage(JSON.stringify({ event: 'command', func, args }), '*'); } catch (e) {} };
@@ -90,7 +93,8 @@ const Video = (() => {
     timer = setTimeout(() => {
       const origin = /^https?:/.test(location.protocol) ? '&origin=' + encodeURIComponent(location.origin) : '';
       ifr = document.createElement('iframe');
-      ifr.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&playsinline=1&modestbranding=1&controls=0&iv_load_policy=3&disablekb=1&fs=0&enablejsapi=1${origin}`;
+      ifr.width = 1920; ifr.height = 1080;
+      ifr.src = `https://www.youtube.com/embed/${id}?autoplay=1&vq=hd1080&rel=0&playsinline=1&modestbranding=1&controls=0&iv_load_policy=3&disablekb=1&fs=0&enablejsapi=1${origin}`;
       ifr.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
       ifr.referrerPolicy = 'strict-origin-when-cross-origin';
       ifr.setAttribute('tabindex', '-1'); ifr.title = 'Vídeo';

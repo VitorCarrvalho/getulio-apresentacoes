@@ -145,7 +145,8 @@ body:not(.idle) .ctl{opacity:.9}
 .vid .yt{position:absolute;inset:0;z-index:5;background:#000;opacity:0;visibility:hidden;transition:opacity 1.2s var(--ease),visibility 0s 1.2s}
 .vid.playing .yt{opacity:1;visibility:visible;transition:opacity 1.2s var(--ease) .2s,visibility 0s}
 .vid.ended .yt{opacity:0;visibility:hidden}
-.vid .yt iframe{position:absolute;left:50%;top:50%;width:min(100vw,calc(100vh * 16 / 9));height:min(100vh,calc(100vw * 9 / 16));transform:translate(-50%,-50%);border:0;pointer-events:none}
+/* o player nasce em Full HD (1920x1080) e só é reduzido na tela: o YouTube escolhe a qualidade pelo tamanho do player, então entrega 1080p mesmo num painel baixo */
+.vid .yt iframe{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform:translate(-50%,-50%) scale(var(--yts,1));transform-origin:50% 50%;border:0;pointer-events:none}
 
 /* 3 · livro */
 #s-livro .bgimg{position:absolute;inset:0;z-index:0;display:flex;justify-content:center;background:var(--deep)}
