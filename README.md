@@ -63,6 +63,8 @@ Ids das telas, na ordem: s-capa, s-vid1, s-livro, s-3p, s-q1, s-q2, s-q3, s-p1, 
 - Edição escolhe a raiz com `"raiz": "2026"` no edicao.json (padrão 2025).
 
 ## Rascunho
+- Rascunhos aparecem na aba **Rascunhos** do catálogo, com os botões Abrir e Ativar. `"substitui": "original"` faz o rascunho virar a original ao ativar (a anterior fica arquivada como `original-<raiz>`, com `"arquivada": true`).
+- Ativar = `POST /api/ativar` (functions/_middleware.js): commit via API do GitHub só em edicoes/. O workflow `.github/workflows/build.yml` roda o build e publica. Precisa do segredo `GITHUB_TOKEN` no Cloudflare Pages (token fine-grained, Contents: Read and write, só neste repositório).
 - `"rascunho": true` publica a edição no endereço dela (protegido pelo token) mas **não** mostra card no catálogo.
 - `"numerado": true` mostra o número do slide do roteiro no topo de cada tela, para conversar tela a tela. Sai na versão aprovada.
 - Fluxo: todo modelo ou edição novo sobe primeiro como rascunho numerado. Só depois do "aprovado" do Getúlio tira `rascunho` e `numerado`.
