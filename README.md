@@ -112,7 +112,7 @@ Ids das telas, na ordem: s-capa, s-vid1, s-livro, s-3p, s-q1, s-q2, s-q3, s-p1, 
 - Builds por clique: `data-steps` na section; `data-show="n"` / `data-only="n"` / `data-active="n"` nos elementos. O rodapé usa `data-num`, ou `data-nums` nas telas agrupadas.
 
 ## Fatos confirmados
-- Filhos: Paulinho, Getulinho e Raphael. Os prints dos slides 49 e 50 têm autorização.
+- Filhos: Getulinho e Raphael. Empresário há 31 anos. Os prints dos slides 49 e 50 têm autorização.
 - QR code: https://www.instagram.com/getulio.cavalcante/
 - Logos do grupo: vetorizados, exceto o da South (PNG original por causa da linha fina "Tecnologia").
 - Palestra completa: cerca de 120 minutos.
