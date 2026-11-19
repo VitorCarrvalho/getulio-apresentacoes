@@ -201,7 +201,7 @@ function render() {
 render();
 
 /* ---------- aba Rascunhos ---------- */
-const toast = t => { const el = document.getElementById('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('on'), 7000); };
+const toast = t => { const el = document.getElementById('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('on'), 20000); };
 document.getElementById('nRas').textContent = RAS.length || '';
 function aba(r) {
   document.body.classList.toggle('ras', r);
@@ -236,7 +236,7 @@ function renderRas() {
     try {
       const r = await fetch('/api/ativar', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ slug: c.slug }) });
       const j = await r.json().catch(() => ({}));
-      if (!r.ok) throw new Error(j.erro || 'Não deu certo.');
+      if (!r.ok) throw new Error(j.erro || ('Não deu certo (erro ' + r.status + '). Tente de novo em 1 minuto.'));
       b.textContent = 'ATIVADO'; toast('Ativado. Em 2 a 3 minutos o catálogo já mostra a nova versão. Atualize a página.');
     } catch (e) { b.disabled = false; b.textContent = 'ATIVAR'; toast(e.message); }
   });

@@ -42,7 +42,12 @@ const REPO = 'VitorCarrvalho/getulio-apresentacoes', BR = 'main';
 async function gh(env, path, opt = {}) {
   const r = await fetch('https://api.github.com/repos/' + REPO + path, { ...opt, headers: { authorization: 'Bearer ' + env.GITHUB_TOKEN, accept: 'application/vnd.github+json', 'user-agent': 'lds-apresentacoes', 'x-github-api-version': '2022-11-28', ...(opt.body ? { 'content-type': 'application/json' } : {}) } });
   const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error('GitHub ' + r.status + ': ' + (j.message || 'erro'));
+  if (!r.ok) {
+    const dica = r.status === 401 ? 'o token do GitHub está inválido ou expirou (gere outro e cole de novo no Cloudflare)'
+      : (r.status === 403 || r.status === 404) ? 'o token do GitHub não tem acesso de escrita ao repositório getulio-apresentacoes (precisa de "Contents: Read and write" e o repositório marcado)'
+      : 'o GitHub recusou o pedido';
+    throw new Error(dica + ' [GitHub ' + r.status + ': ' + (j.message || 'erro') + ' · ' + (opt.method || 'GET') + ' ' + path.split('?')[0] + ']');
+  }
   return j;
 }
 const b64d = s => new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\n/g, '')), c => c.charCodeAt(0)));
@@ -109,10 +114,10 @@ export async function onRequest({ request, env, next }) {
 
   if (p === '/api/ativar') {
     if (request.method !== 'POST') return json({ erro: 'Método não permitido.' }, 405);
-    if (!env.GITHUB_TOKEN) return json({ erro: 'O botão Ativar ainda não foi ligado: falta a chave GITHUB_TOKEN no Cloudflare. Enquanto isso, peça ao Claude: "ativa o rascunho".' }, 503);
+    if (!env.GITHUB_TOKEN) return json({ erro: 'O botão Ativar ainda não foi ligado: falta a chave GITHUB_TOKEN no Cloudflare. Enquanto isso, peça ao Claude: "ativa o rascunho".' }, 424);
     let slug = ''; try { slug = String((await request.json()).slug || ''); } catch (e) {}
     try { const sha = await ativar(env, slug); return json({ ok: true, commit: sha }); }
-    catch (e) { return json({ erro: 'Não consegui ativar: ' + e.message }, 502); }
+    catch (e) { return json({ erro: 'Não consegui ativar: ' + e.message }, 422); }
   }
 
   const res = await next();
