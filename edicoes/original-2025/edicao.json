@@ -1,18 +1,15 @@
 {
-  "slug": "original-rascunho",
+  "slug": "original-2025",
   "titulo": "Como Encantar Seu Time",
-  "evento": "Novo modelo original",
+  "evento": "Palestra original (versão 2025)",
   "cliente": "",
   "cidade": "",
   "data": "",
-  "duracao_min": 80,
+  "duracao_min": 120,
   "categoria": "original",
   "fixa": true,
-  "rascunho": true,
-  "numerado": true,
-  "raiz": "2026",
   "logo": "",
   "qr": true,
   "telas": "todas",
-  "substitui": "original"
+  "arquivada": true
 }

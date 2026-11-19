@@ -5,9 +5,10 @@
   "cliente": "",
   "cidade": "",
   "data": "",
-  "duracao_min": 120,
+  "duracao_min": 80,
   "categoria": "original",
   "fixa": true,
+  "raiz": "2026",
   "logo": "",
   "qr": true,
   "telas": "todas"
